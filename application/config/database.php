@@ -45,25 +45,82 @@
 | the active record class
 */
 
-$active_group = 'default';
-$active_record = TRUE;
+$active_group = 'DBM';
+$active_record = FALSE;
 
-$db['default']['hostname'] = 'localhost';
-$db['default']['username'] = '';
-$db['default']['password'] = '';
-$db['default']['database'] = '';
-$db['default']['dbdriver'] = 'mysql';
-$db['default']['dbprefix'] = '';
-$db['default']['pconnect'] = TRUE;
-$db['default']['db_debug'] = TRUE;
-$db['default']['cache_on'] = FALSE;
-$db['default']['cachedir'] = '';
-$db['default']['char_set'] = 'utf8';
-$db['default']['dbcollat'] = 'utf8_general_ci';
-$db['default']['swap_pre'] = '';
-$db['default']['autoinit'] = TRUE;
-$db['default']['stricton'] = FALSE;
+if(ENVIRONMENT == 'production') {
+	// master
+	$db['DBM']['hostname'] = '175.126.100.53';
+	$db['DBM']['port'] = '3306';
+	$db['DBM']['username'] = 'van';
+	$db['DBM']['password'] = 'ejswus82';
+	$db['DBM']['database'] = '';
+	$db['DBM']['dbdriver'] = 'mysql';
+	$db['DBM']['dbprefix'] = '';
+	$db['DBM']['pconnect'] = TRUE;
+	$db['DBM']['db_debug'] = TRUE;
+	$db['DBM']['cache_on'] = FALSE;
+	$db['DBM']['cachedir'] = '';
+	$db['DBM']['char_set'] = 'utf8mb4';
+	$db['DBM']['dbcollat'] = 'utf8mb4_unicode_ci';
+	$db['DBM']['swap_pre'] = '';
+	$db['DBM']['autoinit'] = TRUE;
+	$db['DBM']['stricton'] = FALSE;
 
+	// slave
+	$db['DBS']['hostname'] = '175.126.100.53';
+	$db['DBS']['port'] = '3306';
+	$db['DBS']['username'] = 'van';
+	$db['DBS']['password'] = 'ejswus82';
+	$db['DBS']['database'] = '';
+	$db['DBS']['dbdriver'] = 'mysql';
+	$db['DBS']['dbprefix'] = '';
+	$db['DBS']['pconnect'] = TRUE;
+	$db['DBS']['db_debug'] = TRUE;
+	$db['DBS']['cache_on'] = FALSE;
+	$db['DBS']['cachedir'] = '';
+	$db['DBS']['char_set'] = 'utf8mb4';
+	$db['DBS']['dbcollat'] = 'utf8mb4_unicode_ci';
+	$db['DBS']['swap_pre'] = '';
+	$db['DBS']['autoinit'] = TRUE;
+	$db['DBS']['stricton'] = FALSE;
+} else {
+	// master
+	$db['DBM']['hostname'] = 'localhost';	
+	$db['DBM']['port'] = '3306';
+	$db['DBM']['username'] = 'van';
+	$db['DBM']['password'] = 'ejswus82';
+	$db['DBM']['database'] = '';
+	$db['DBM']['dbdriver'] = 'mysql';
+	$db['DBM']['dbprefix'] = '';
+	$db['DBM']['pconnect'] = TRUE;
+	$db['DBM']['db_debug'] = TRUE;
+	$db['DBM']['cache_on'] = FALSE;
+	$db['DBM']['cachedir'] = '';
+	$db['DBM']['char_set'] = 'utf8mb4';
+	$db['DBM']['dbcollat'] = 'utf8mb4_unicode_ci';
+	$db['DBM']['swap_pre'] = '';
+	$db['DBM']['autoinit'] = TRUE;
+	$db['DBM']['stricton'] = FALSE;
+
+	// slave
+	$db['DBS']['hostname'] = 'localhost';
+	$db['DBS']['port'] = '3306';
+	$db['DBS']['username'] = 'van';
+	$db['DBS']['password'] = 'ejswus82';
+	$db['DBS']['database'] = '';
+	$db['DBS']['dbdriver'] = 'mysql';
+	$db['DBS']['dbprefix'] = '';
+	$db['DBS']['pconnect'] = TRUE;
+	$db['DBS']['db_debug'] = TRUE;
+	$db['DBS']['cache_on'] = FALSE;
+	$db['DBS']['cachedir'] = '';
+	$db['DBS']['char_set'] = 'utf8mb4';
+	$db['DBS']['dbcollat'] = 'utf8mb4_unicode_ci';
+	$db['DBS']['swap_pre'] = '';
+	$db['DBS']['autoinit'] = TRUE;
+	$db['DBS']['stricton'] = FALSE;
+}
 
 /* End of file database.php */
 /* Location: ./application/config/database.php */
