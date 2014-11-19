@@ -14,8 +14,7 @@ class Board extends MY_Controller {
 	}
 
 	public function write(){
-		$this->_inlineHeadScript = 'var saveMode = "write";';
-		$this->_footScript[] = 'common/jquery.form.min.js';
+		$this->_inlineHeadScript = 'var _saveMode = "write";';
 		$this->_footScript[] = 'admin/board/write.js';
 
 		$this->load->helper('form');
@@ -51,8 +50,7 @@ class Board extends MY_Controller {
 	}
 
 	public function modify($boardID){
-		$this->_inlineHeadScript = 'var saveMode = "modify";';
-		$this->_footScript[] = 'common/jquery.form.min.js';
+		$this->_inlineHeadScript = 'var _saveMode = "modify"; var _boardID = "'.$boardID.'"';
 		$this->_footScript[] = 'admin/board/write.js';
 
 		$this->load->helper('form');

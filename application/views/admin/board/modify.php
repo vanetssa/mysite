@@ -68,9 +68,33 @@
   <div class="form-group">
     <label for="fileCount" class="col-sm-3 control-label">게시판 상태</label>
     <div class="col-xs-2">
-      <select class="form-control" name="status" id="status">        
+      <select class="form-control" name="status" id="status">
         <?php echo $boardStatusOpt; ?>
       </select>
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="category" class="col-sm-3 control-label">카테고리</label>
+    <div class="col-lg-4">
+      <div class="input-group">
+        <input type="text" class="form-control" id="category" name="category" placeholder="카테고리">
+        <span class="input-group-btn">
+          <button class="btn btn-primary" type="button" data-name="actionBtn" data-act="categoryAdd">추가</button>
+        </span>
+      </div>
+      <?php
+        foreach($boardData['category'] as $category){
+      ?>
+      <div class="input-group" style="margin-top:5px">
+        <input type="text" class="form-control" id="category_<?php echo $category['id']; ?>" name="category_<?php echo $category['id']; ?>" value="<?php echo $category['name']; ?>">
+        <span class="input-group-btn">
+          <input type="hidden" class="form-control" id="order_<?php echo $category['id']; ?>" name="order_<?php echo $category['id']; ?>" value="<?php echo $category['order']; ?>">
+          <button class="btn btn-danger" type="button" data-name="actionBtn" data-act="categoryModify" data-val="<?php echo $category['id']; ?>">수정</button>
+        </span>
+      </div>
+      <?php
+        }
+      ?>      
     </div>
   </div>
   <div class="form-group">

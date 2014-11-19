@@ -8,11 +8,15 @@ class Board_m extends MY_Model {
 	const BOARD_TYPE_HTML    = 'HT';
 
 	const BOARD_STATUS_NORMAL = 'AA';
-	const BOARD_STATUS_DELETE = 'CA';	
+	const BOARD_STATUS_DELETE = 'CA';
 
-	var $BOARD_TYPE   = array();
-	var $BOARD_STATUS = array();
-	var $CODE_DATA    = array();
+	const CATEGORY_STATUS_NORMAL = 'AA';
+	const CATEGORY_STATUS_DELETE = 'CA';
+
+	var $BOARD_TYPE      = array();
+	var $BOARD_STATUS    = array();
+	var $CATEGORY_STATUS = array();
+	var $CODE_DATA       = array();
 
 	var $FILE_SIZE_LIST  = array(array(1,'1MB'),array(3,'3MB'),array(5,'5MB'),array(10,'10MB'),array(20,'20MB'));
 	var $FILE_COUNT_LIST = array(array(1,'1개'),array(2,'2개'),array(3,'3개'),array(4,'4개'),array(5,'5개'));
@@ -30,8 +34,12 @@ class Board_m extends MY_Model {
 		$this->BOARD_STATUS[] = array($this::BOARD_STATUS_NORMAL,'정상');
 		$this->BOARD_STATUS[] = array($this::BOARD_STATUS_DELETE,'비노출');
 
-		$this->CODE_DATA['BOARD_TYPE']   = $this->BOARD_TYPE;
-		$this->CODE_DATA['BOARD_STATUS'] = $this->BOARD_STATUS;
+		$this->CATEGORY_STATUS[] = array($this::CATEGORY_STATUS_NORMAL,'정상');
+		$this->CATEGORY_STATUS[] = array($this::CATEGORY_STATUS_DELETE,'비노출');
+
+		$this->CODE_DATA['BOARD_TYPE']      = $this->BOARD_TYPE;
+		$this->CODE_DATA['BOARD_STATUS']    = $this->BOARD_STATUS;
+		$this->CODE_DATA['CATEGORY_STATUS'] = $this->CATEGORY_STATUS;
 	}
 
 	/**
@@ -95,7 +103,7 @@ class Board_m extends MY_Model {
 		try{
   			$this->dbm->query($sql,$data);
   			$dataID = $this->dbm->insert_id();
-  		}catch(Exception $e){  			
+  		}catch(Exception $e){
   			throw new Exception($e->getMessage().'|'.__LINE__, 100);
   		}
 
@@ -158,12 +166,15 @@ class Board_m extends MY_Model {
 		$where = array();
 		$bindData = array();
 
+		$where[] = '`Board`.`Status` = "AA"';
 		if(!empty($type)){ $where[] = '`Type` = ?'; $bindData[] = $type; }
 		if(!empty($boardID)){ $where[] = '`ID` = ?'; $bindData[] = $boardID; }
 
 		if(!empty($where)){
 			$sql .= ' WHERE '.implode(' AND ',$where);
 		}
+
+		$categoryData = $this->getCategoryByBoard($boardID,$type);
 
 		$rstData = array();
 		$res = $this->dbs->query($sql,$bindData);
@@ -184,6 +195,7 @@ class Board_m extends MY_Model {
 			$data['modifyDate']   = !empty($row->ModifyDate)?substr($row->ModifyDate,0,16):'';
 			$data['typeValue']    = $this->getCodeValue('BOARD_TYPE',$data['type']);
 			$data['statusValue']  = $this->getCodeValue('BOARD_STATUS',$data['status']);
+			$data['category']     = !empty($categoryData[$data['id']])?$categoryData[$data['id']]:array();
 
 			$rstData[] = $data;
 		}
@@ -212,6 +224,151 @@ class Board_m extends MY_Model {
 	public function getBoardDetail($boardID){
 		$data = $this->getBoard($boardID);
 		$data = !empty($data[0])?$data[0]:array();
+		return $data;
+	}
+
+	/**
+	 * 카테고리 추가
+	 * 
+	 * @access public
+	 * @param int $boardID 게시판 ID
+	 * @param string $categoryName 카테고리명
+	 * @return int
+	 */
+	public function addCategory($boardID,$categoryName){
+		$sql = 'SELECT MAX(`Order`) as `maxOrder` FROM `BOARD`.`Category` WHERE BoardID = ?';
+		$res = $this->dbs->query($sql,array($boardID));
+		$row = $res->row();
+		if($row){
+			$order = $row->maxOrder + 1;
+		}else{
+			$order = 1;
+		}
+
+  		$sql = '
+  			INSERT INTO `BOARD`.`Category` (
+  				`BoardID`,`Name`,`Order`,`Status`,`CreateDate`,`ModifyDate`
+  			) VALUES (
+  				?,?,?,"AA",now(),now()
+  			)
+		';
+
+		$data = array();
+		$data[] = $boardID;
+		$data[] = trim($categoryName);
+		$data[] = $order;
+
+		try{
+  			$this->dbm->query($sql,$data);
+  			$categoryID = $this->dbm->insert_id();
+  		}catch(Exception $e){
+  			throw new Exception($e->getMessage().'|'.__LINE__, 100);
+  		}
+
+  		return $categoryID;
+	}
+
+	/**
+	 * 카테고리 수정
+	 * 
+	 * @access public
+	 * @param int $categoryID 카테고리ID
+	 * @param string $categoryName 카테고리명
+	 * @param int $categoryOrder 카테고리 노출순서
+	 * @return void
+	 */
+	public function modifyCategory($categoryID,$categoryName,$categoryOrder){		
+		if($categoryName){
+			$sql = '
+				UPDATE `BOARD`.`Category` SET 
+				`Name`=?,`Order`=?,`ModifyDate`=now()
+				WHERE ID = ?
+			';
+
+			$data = array();
+			$data[] = trim($categoryName);
+			$data[] = $categoryOrder;
+			$data[] = $categoryID;
+		}else{
+			$sql = '
+				UPDATE `BOARD`.`Category` SET 
+				`Order`=?,`Status`="CA",`ModifyDate`=now()
+				WHERE ID = ?
+			';
+
+			$data = array();
+			$data[] = $categoryOrder;
+			$data[] = $categoryID;
+		}
+
+		try{
+  			$this->dbm->query($sql,$data);
+  		}catch(Exception $e){
+  			throw new Exception($e->getMessage().'|'.__LINE__, 100);
+  		}
+	}
+
+	/**
+	 * 카테고리 가져오기
+	 * 
+	 * @access public
+	 * @param int $categoryID 카테고리ID
+	 * @param int $boardID 게시판ID
+	 * @param string $type 게시판타입코드
+	 * @return array
+	 */
+	public function getCategory($categoryID=null,$boardID=null,$type=''){
+		$sql = 'SELECT `Category`.* FROM `BOARD`.`Category`,`BOARD`.`Board`';
+
+		$where = array();
+		$bindData = array();
+
+		$where[] = '`Board`.`ID` = `Category`.`BoardID`';
+		$where[] = '`Board`.`Status` = "AA"';
+		$where[] = '`Category`.`Status` = "AA"';
+		if(!empty($categoryID)){ $where[] = '`Category`.`ID` = ?'; $bindData[] = $categoryID; }
+		if(!empty($boardID)){ $where[] = '`Category`.`BoardID` = ?'; $bindData[] = $boardID; }
+		if(!empty($type)){ $where[] = '`Board`.`Type` = ?'; $bindData[] = $type; }
+
+		if(!empty($where)){
+			$sql .= ' WHERE '.implode(' AND ',$where);
+		}
+
+		$rstData = array();
+		$res = $this->dbs->query($sql,$bindData);
+
+		foreach($res->result() as $row){
+			$data = array();
+			$data['id']          = $row->ID;
+			$data['boardID']     = $row->BoardID;
+			$data['name']        = $row->Name;
+			$data['order']       = $row->Order;
+			$data['status']      = $row->Status;
+			$data['createDate']  = !empty($row->CreateDate)?substr($row->CreateDate,0,16):'';
+			$data['modifyDate']  = !empty($row->ModifyDate)?substr($row->ModifyDate,0,16):'';
+			$data['statusValue'] = $this->getCodeValue('CATEGORY_STATUS',$data['status']);
+
+			$rstData[] = $data;
+		}
+
+		return $rstData;
+	}
+
+	/**
+	 * 게시판에 연결된 카테고리 가져오기
+	 * 
+	 * @access public
+	 * @param int $boardID 게시판ID
+	 * @param string $type 게시판타입코드
+	 * @return array
+	 */
+	public function getCategoryByBoard($boardID,$type){
+		$data = array();
+		$cate = $this->getCategory(null,$boardID,$type);
+		foreach($cate as $c){
+			$data[$c['boardID']][] = $c;
+		}
+
 		return $data;
 	}
 

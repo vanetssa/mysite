@@ -18,7 +18,9 @@
 			$this->_styleSheet[] = 'bootstrap/bootstrap.min.css';
 
 			$this->_headScript[] = 'common/jquery.js';
+			$this->_headScript[] = 'common/jquery.form.min.js';
 			$this->_headScript[] = 'bootstrap/bootstrap.min.js';
+			$this->_headScript[] = 'common.js';
 
 			$this->_title = 'van site';
 

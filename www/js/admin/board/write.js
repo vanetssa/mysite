@@ -3,7 +3,7 @@ var boardWrite = {};
 boardWrite = {
 	init:function(){
 
-		$('button[data-name=actionBtn],:checkbox[data-name=actionBtn]').click(function(){
+		$('button[data-name=actionBtn],input[data-name=actionBtn]').click(function(){
 			boardWrite.action($(this));
 		});
 		
@@ -15,6 +15,12 @@ boardWrite = {
 		}else{
 			$('div[name=addFileGroup]').hide();
 		}
+	}
+	,categoryAdd:function(){		
+		$.ajax({
+			url:'/admin/category/add/'+_boardID
+
+		});
 	}
 	,dataSubmit:function(){
 		if(!$('#type').val()){
@@ -43,7 +49,7 @@ boardWrite = {
 				return false;
 			}
 		}
-
+		/*
 		$('#saveForm').ajaxSubmit({
 			dataType:'json',
 			success:function(res){
@@ -52,16 +58,53 @@ boardWrite = {
 				}
 			}
 		});
+		*/
+		ajaxManager.setCallback(function(res){
+			if(res.status == 200){
+				location.replace('/admin/board');
+			}
+		});
+		ajaxManager.callAjaxSubmit('saveForm');
+	}
+	,categoryAdd:function(){
+		var categoryName = $('#category').val();		
+		if(categoryName){
+			ajaxManager.setOpt('/admin/category/add',{boardID:_boardID,categoryName:categoryName},function(res){
+				if(res.status == 200){
+					location.replace(location.href);
+				}
+			});
+			ajaxManager.callAjax();
+		}
+	}
+	,categoryModify:function(categoryID){
+		var categoryName  = $('#category_'+categoryID).val();
+		var categoryOrder = $('#order_'+categoryID).val();
+
+		if(categoryName){
+			ajaxManager.setOpt('/admin/category/modify',{categoryID:categoryID,categoryName:categoryName,categoryOrder:categoryOrder},function(res){
+				if(res.status == 200){
+					location.replace(location.href);
+				}
+			});
+			ajaxManager.callAjax();
+		}
 	}
 	,action:function(actBtn){
-		var act = actBtn.attr('data-act');		
+		var act = actBtn.data('act');		
 		switch(act){
 			case 'addFileGroupDisplay':
 				boardWrite.addFileGroupDisplay(actBtn.is(':checked'));
 				break;
+			case 'categoryAdd':
+				boardWrite.categoryAdd();
+				break;
+			case 'categoryModify':
+				boardWrite.categoryModify(actBtn.data('val'));
+				break;
 			case 'dataSubmit':
 				boardWrite.dataSubmit();
-				break;
+				break;			
 		}
 	}
 };
