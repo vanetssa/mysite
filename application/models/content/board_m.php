@@ -18,6 +18,9 @@ class Board_m extends MY_Model {
 	const DATA_STATUS_DELETE = 'CA';
 	const DATA_STATUS_BLIND  = 'BA';
 
+	const FILE_STATUS_NORMAL = 'AA';
+	const FILE_STATUS_DELETE = 'CA';
+
 	const BOARD_DATA_FOLDER = '/webdata/file/board';
 	const BOARD_DATA_FILE   = 'boardData.data';
 
@@ -441,17 +444,18 @@ class Board_m extends MY_Model {
 	 * @param string $title 제목
 	 * @param string $content 내용
 	 * @param array $imgFile 이미지 데이터(array('name|size|tempName|extention','name|size|tempName|extention',...))
-	 * @return void
+	 * @return int
 	 */
 	public function saveContent($boardID,$categoryID,$userID,$title,$content,$imgFile){
+		$title   = trim($title);
+		$content = trim($content);
+
 		$data = array();
 		$data[] = $boardID;
 		$data[] = $categoryID;
 		$data[] = $userID;
-		$data[] = trim($title);
-		$data[] = trim($content);
-
-		$newContent = trim($content);
+		$data[] = $title;
+		$data[] = $content;
 
   		$sql = "
   			INSERT INTO `BOARD`.`Data` (
@@ -468,9 +472,78 @@ class Board_m extends MY_Model {
   			throw new Exception($e->getMessage().'|'.__LINE__, 100);
   		}
 
-  		$imgSave = false;
-		$imgData = array();
-		if(!empty($imgFile) && is_array($imgFile)){
+  		$this->saveContentImage($dataID,$content,$imgFile);
+
+  		return $dataID;
+	}
+
+	/**
+	 * 게시판 내용 수정
+	 * 
+	 * @access public
+	 * @param int $dataID 게시글 ID
+	 * @param int $boardID 게시판 ID
+	 * @param int $categoryID 말머리(분류) ID
+	 * @param string $title 제목
+	 * @param string $content 내용
+	 * @param array $imgFile 이미지 데이터(array('name|size|tempName|extention','name|size|tempName|extention',...))
+	 * @return true
+	 */
+	public function modifyContent($dataID,$boardID,$categoryID,$title,$content,$imgFile){
+		$title   = trim($title);
+		$content = trim($content);
+
+		$data = array();
+		$data[] = $boardID;
+		$data[] = $categoryID;		
+		$data[] = $title;
+		$data[] = $content;
+		$data[] = $dataID;
+
+		$sql = "
+			UPDATE `BOARD`.`Data` SET 
+				`BoardID` = ?,`CategoryID` = ?,`Title` = ?,`Content` = ?,`ModifyDate` = now()
+			WHERE `ID` = ?
+		";
+
+  		try{
+  			$this->dbm->query($sql,$data);
+  		}catch(Exception $e){
+  			throw new Exception($e->getMessage().'|'.__LINE__, 100);
+  		}
+
+  		$data = array();
+  		$data[] = $this::FILE_STATUS_DELETE;
+  		$data[] = $dataID;
+
+  		$sql = "
+  			UPDATE `BOARD`.`File` SET
+  				`Status` = ?, `ModifyDate` = now()
+  			WHERE
+  				`DataID` = ?
+  		";
+
+  		try{
+  			$this->dbm->query($sql,$data);
+  		}catch(Exception $e){
+  			throw new Exception($e->getMessage().'|'.__LINE__, 100);
+  		}
+
+  		$this->saveContentImage($dataID,$content,$imgFile);
+
+  		return true;
+	}
+
+	/**
+	 * 컨텐츠 내의 이미지 저장
+	 * 
+	 * @param int $dataID 게시글 ID
+	 * @param string $content 게시글 내용
+	 * @param array $imgFile 이미지파일 리스트
+	 * @return void
+	 */
+	private function saveContentImage($dataID,$content,$imgFile){
+		if(!empty($dataID) && !empty($content) && !empty($imgFile) && is_array($imgFile)){
 			foreach($imgFile as $img){
 				$data = explode('|',$img);
 
@@ -516,7 +589,7 @@ class Board_m extends MY_Model {
 
   				fileSave(getenv('DOCUMENT_ROOT').'/img/board_tmp/'.$fileTemp,$newPath,false);
 
-  				$newContent = str_replace('/img/board_tmp/'.$fileTemp,'/image/draw/board/'.$year.$month.'/'.$newFileName,$newContent);
+  				$newContent = str_replace('/img/board_tmp/'.$fileTemp,'/image/draw/board/'.$year.$month.'/'.$newFileName,$content);
 			}
 
 			$sql = "UPDATE `BOARD`.`Data` SET Content = ? WHERE ID = ?";
@@ -647,5 +720,16 @@ class Board_m extends MY_Model {
 		$data['statusValue']    = $this->getCodeValue('DATA_STATUS',$data['status']);
 
 		return $data;
+	}
+
+	/**
+	 * 게시글 상세 가져오기
+	 * 
+	 * @param int $dataID 게시글ID
+	 * @return array
+	 */
+	public function getContentDetail($dataID){
+		$message = $this->getContent('','',$dataID);
+		return !empty($message[0])?$message[0]:array();
 	}
 }

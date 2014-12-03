@@ -52,7 +52,12 @@ boardWrite = {
 
 		ajaxManager.setCallback(function(res){
 			if(res.status == 200){
-				location.replace('/board/'+_boardGroup+'/list');
+				var searchParam = $('#searchParam').val();
+				if(res.data.dataID){
+					location.replace('/board/'+_boardGroup+'/view/'+res.data.dataID+'/?'+searchParam);
+				}else{
+					location.replace('/board/'+_boardGroup+'/list/?'+searchParam);
+				}
 			}
 		});
 		ajaxManager.callAjaxSubmit('saveForm');
