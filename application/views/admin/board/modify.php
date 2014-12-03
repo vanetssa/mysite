@@ -1,4 +1,4 @@
-<form action="/admin/board/save/<?php echo $boardData['id']; ?>" id="saveForm" name="saveForm" role="form" class="form-horizontal" method="post">  
+<form action="/admin/board/save/<?php echo $boardData['id']; ?>" id="saveForm" name="saveForm" role="form" class="form-horizontal" method="post">    
   <div class="form-group">
     <label for="type" class="col-sm-3 control-label">게시판 타입</label>
     <div class="col-xs-2">
@@ -77,7 +77,7 @@
     <label for="category" class="col-sm-3 control-label">카테고리</label>
     <div class="col-lg-4">
       <div class="input-group">
-        <input type="text" class="form-control" id="category" name="category" placeholder="카테고리">
+        <input type="text" class="form-control" id="category" name="category" data-name="actionBtn" data-act="categoryAddInput" placeholder="카테고리">
         <span class="input-group-btn">
           <button class="btn btn-primary" type="button" data-name="actionBtn" data-act="categoryAdd">추가</button>
         </span>
@@ -100,6 +100,7 @@
   <div class="form-group">
     <div class="col-sm-offset-5 col-sm-10">
       <button type="button" class="btn btn-success" data-name="actionBtn" data-act="dataSubmit">저장</button>
+      <button type="button" class="btn btn-"        data-name="actionBtn" data-act="retunToList">목록</button>
     </div>
   </div>
 </form>

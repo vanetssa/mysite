@@ -50,6 +50,20 @@
     </div>
   </div>
   <?php } ?>
+  <?php if(!empty($boardData['category'])){ ?>
+  <div class="form-group">
+    <label class="col-sm-3 control-label">카테고리</label>
+    <div class="col-sm-9">
+      <?php
+        foreach($boardData['category'] as $category){
+      ?>
+      <p class="form-control-static"><?php echo $category['name']; ?></p>
+      <?php 
+        }
+      ?>
+    </div>
+  </div>
+  <?php } ?>
   <div class="form-group">
     <label class="col-sm-3 control-label">생성일</label>
     <div class="col-sm-9">

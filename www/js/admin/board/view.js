@@ -2,7 +2,7 @@ var boardView = {};
 
 boardView = {
 	init:function(){
-		$('button[data-name=actionBtn]').click(function(){
+		$('#siteBody').on('click','button[data-name=actionBtn]',function(){
 			boardView.action($(this));
 		});
 	}

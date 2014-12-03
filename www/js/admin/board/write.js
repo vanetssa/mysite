@@ -3,8 +3,16 @@ var boardWrite = {};
 boardWrite = {
 	init:function(){
 
-		$('button[data-name=actionBtn],input[data-name=actionBtn]').click(function(){
+		$('#siteBody').on('click','button[data-name=actionBtn],input[data-name=actionBtn]',function(){
 			boardWrite.action($(this));
+		});
+
+		$('#siteBody').on('keyup','input[data-name=actionBtn]',function(e){
+			if($(this).data('act') == 'categoryAddInput'){
+				if(e.keyCode == 13){
+					boardWrite.categoryAdd();
+				}
+			}
 		});
 		
 		boardWrite.addFileGroupDisplay($('#useFile').is(':checked'));
@@ -15,12 +23,6 @@ boardWrite = {
 		}else{
 			$('div[name=addFileGroup]').hide();
 		}
-	}
-	,categoryAdd:function(){		
-		$.ajax({
-			url:'/admin/category/add/'+_boardID
-
-		});
 	}
 	,dataSubmit:function(){
 		if(!$('#type').val()){
@@ -49,16 +51,7 @@ boardWrite = {
 				return false;
 			}
 		}
-		/*
-		$('#saveForm').ajaxSubmit({
-			dataType:'json',
-			success:function(res){
-				if(res.status == 200){
-					location.replace('/admin/board');
-				}
-			}
-		});
-		*/
+
 		ajaxManager.setCallback(function(res){
 			if(res.status == 200){
 				location.replace('/admin/board');
@@ -66,8 +59,11 @@ boardWrite = {
 		});
 		ajaxManager.callAjaxSubmit('saveForm');
 	}
+	,retunToList:function(){
+		location.href = '/admin/board?type='+_searchType;
+	}
 	,categoryAdd:function(){
-		var categoryName = $('#category').val();		
+		var categoryName = $('#category').val();
 		if(categoryName){
 			ajaxManager.setOpt('/admin/category/add',{boardID:_boardID,categoryName:categoryName},function(res){
 				if(res.status == 200){
@@ -104,7 +100,10 @@ boardWrite = {
 				break;
 			case 'dataSubmit':
 				boardWrite.dataSubmit();
-				break;			
+				break;
+			case 'retunToList':
+				boardWrite.retunToList();
+				break;
 		}
 	}
 };

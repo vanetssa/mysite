@@ -4,7 +4,6 @@ class Board extends MY_Controller {
 	
 	public function __construct(){
 		parent::__construct();
-		$this->_styleSheet[] = 'bootstrap/blog.css';
 
 		$this->load->model('content/board_m','board');
 	}
@@ -13,8 +12,7 @@ class Board extends MY_Controller {
 		$this->lists();
 	}
 
-	public function write(){
-		$this->_inlineHeadScript = 'var _saveMode = "write";';
+	public function write(){		
 		$this->_footScript[] = 'admin/board/write.js';
 
 		$this->load->helper('form');
@@ -23,6 +21,8 @@ class Board extends MY_Controller {
 		$data['boardTypeOpt'] = makeOptionTagByList($this->board->BOARD_TYPE);
 		$data['fileSizeOpt']  = makeOptionTagByList($this->board->FILE_SIZE_LIST);
 		$data['fileCountOpt'] = makeOptionTagByList($this->board->FILE_COUNT_LIST);
+
+		$this->_inlineHeadScript = 'var _saveMode = "write";';
 
 		$this->load_view('admin/board/write',$data);
 	}
@@ -49,8 +49,7 @@ class Board extends MY_Controller {
 		$this->load_view('admin/board/list',$data);
 	}
 
-	public function modify($boardID){
-		$this->_inlineHeadScript = 'var _saveMode = "modify"; var _boardID = "'.$boardID.'"';
+	public function modify($boardID){		
 		$this->_footScript[] = 'admin/board/write.js';
 
 		$this->load->helper('form');
@@ -64,6 +63,8 @@ class Board extends MY_Controller {
 		$data['fileSizeOpt']    = makeOptionTagByList($this->board->FILE_SIZE_LIST,$data['boardData']['fileSize']);
 		$data['fileCountOpt']   = makeOptionTagByList($this->board->FILE_COUNT_LIST,$data['boardData']['fileCount']);
 		$data['boardStatusOpt'] = makeOptionTagByList($this->board->BOARD_STATUS,$data['boardData']['status']);
+
+		$this->_inlineHeadScript = 'var _saveMode = "modify"; var _boardID = "'.$boardID.'"; var _searchType = "'.$type.'"';
 
 		$this->load_view('admin/board/modify',$data);
 	}
@@ -96,5 +97,10 @@ class Board extends MY_Controller {
 		$rstData['boardID'] = $boardID;
 
 		$this->json_view($rstData);
+	}
+
+	public function tofile(){
+		$this->board->saveToFile();
+		$this->movePage('/admin/board');
 	}
 }

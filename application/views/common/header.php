@@ -37,14 +37,6 @@
         <!-- Head Inline Script -->
         <?php if(!empty($this->_inlineHeadScript)){ echo '<script>'.$this->_inlineHeadScript.'</script>'; } ?>
     </head>
-    <body>
-
+    <body role="document">
     <?php include_once('gnb.php'); ?>
-
-    <div class="container">
-        <div class="blog-header">
-            <h1 class="blog-title">The Bootstrap Blog</h1>
-            <p class="lead blog-description">The official example template of creating a blog with Bootstrap.</p>
-        </div>
-        <div class="row">
-            <div class="col-sm-9 blog-main">
+    <div class="container theme-showcase" role="main" id="siteBody">

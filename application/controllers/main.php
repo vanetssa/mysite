@@ -20,8 +20,6 @@ class Main extends MY_Controller {
 
 	public function index()
 	{
-		$this->_styleSheet[] = 'bootstrap/blog.css';
-
 		$this->load_view('main');
 	}
 }
