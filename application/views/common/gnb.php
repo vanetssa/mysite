@@ -29,6 +29,16 @@
           </ul>
         </li>
       </ul>
+      <form class="navbar-form navbar-right" role="form" action="/user/auth/login">
+        <div class="form-group">
+          <input type="text" placeholder="Email" class="form-control" name="email">
+        </div>
+        <div class="form-group">
+          <input type="password" placeholder="Password" class="form-control" name="pass">
+        </div>
+        <button type="submit" class="btn btn-success">Sign in</button>
+        <button type="button" class="btn btn-primary" onclick="location.href='/user/auth/join'">Join</button>
+      </form>
     </div><!--/.nav-collapse -->
   </div>
 </nav>
