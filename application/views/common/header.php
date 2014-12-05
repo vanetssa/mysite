@@ -37,6 +37,6 @@
         <!-- Head Inline Script -->
         <?php if(!empty($this->_inlineHeadScript)){ echo '<script>'.$this->_inlineHeadScript.'</script>'; } ?>
     </head>
-    <body role="document" style="-webkit-transform:rotate(310deg)">
+    <body role="document">
     <?php include_once('gnb.php'); ?>
     <div class="container theme-showcase" role="main" id="siteBody">
