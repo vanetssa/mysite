@@ -13,6 +13,10 @@ class Auth extends MY_Controller {
 		$this->load_view('user/auth/join');
 	}
 
+	public function login(){
+		$this->load_view('user/auth/login');	
+	}
+
 	public function save($userID=''){
 		$email = $this->input->post('email');
 		$passwd = $this->input->post('passwd');
@@ -33,5 +37,30 @@ class Auth extends MY_Controller {
 		$rstData['userID'] = $userID;
 
 		$this->json_view($rstData);
+	}
+
+	public function getauth(){
+		$email  = $this->input->post('email');
+		$passwd = $this->input->post('passwd');
+
+		if(empty($email)){
+			$this->movePage('/','이메일 주소를 입력 하세요.');
+		}
+
+		if(empty($passwd)){
+			$this->movePage('/','비밀번호를 입력 하세요.');
+		}
+
+		$result = $this->user->login($email,$passwd);
+		if($result){
+			$this->movePage('/');
+		}else{
+			$this->movePage('/','이메일과 비밀번호를 확인해바');
+		}
+	}
+
+	public function logout(){		
+		$this->user->logout();
+		$this->movePage('/');
 	}
 }

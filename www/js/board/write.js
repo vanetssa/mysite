@@ -38,29 +38,33 @@ boardWrite = {
 		$('#'+name+'_dropdownMenu').html(text+'<span class="caret"></span>');
 	}
 	,dataSubmit:function(){
-		$('#content').editorUpdated();
+		if(commonFunction.isLogin()){
+			$('#content').editorUpdated();
 
-		if(!$('#title').val()){
-			alert('제목을 입력 해 주세요');
-			return false;
-		}
-
-		if(!$('#content').val()){
-			alert('내용을 입력 해 주세요');
-			return false;
-		}
-
-		ajaxManager.setCallback(function(res){
-			if(res.status == 200){
-				var searchParam = $('#searchParam').val();
-				if(res.data.dataID){
-					location.replace('/board/'+_boardGroup+'/view/'+res.data.dataID+'/?'+searchParam);
-				}else{
-					location.replace('/board/'+_boardGroup+'/list/?'+searchParam);
-				}
+			if(!$('#title').val()){
+				alert('제목을 입력 해 주세요');
+				return false;
 			}
-		});
-		ajaxManager.callAjaxSubmit('saveForm');
+
+			if(!$('#content').val()){
+				alert('내용을 입력 해 주세요');
+				return false;
+			}
+
+			ajaxManager.setCallback(function(res){
+				if(res.status == 200){
+					var searchParam = $('#searchParam').val();
+					if(res.data.dataID){
+						location.replace('/board/'+_boardGroup+'/view/'+res.data.dataID+'/?'+searchParam);
+					}else{
+						location.replace('/board/'+_boardGroup+'/list/?'+searchParam);
+					}
+				}
+			});
+			ajaxManager.callAjaxSubmit('saveForm');
+		}else{
+			commonFunction.moveToLogin();
+		}		
 	}
 	,action:function(actBtn){
 		var act = actBtn.attr('data-act');

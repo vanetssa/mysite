@@ -36,6 +36,11 @@ define('FOPEN_READ_WRITE_CREATE',				'a+b');
 define('FOPEN_WRITE_CREATE_STRICT',				'xb');
 define('FOPEN_READ_WRITE_CREATE_STRICT',		'x+b');
 
+//로그인 관련 쿠키
+define('LOGIN_COOKIE_KEY',    '5762344a7fa7fd5fd20fda5329d9401141682370');//sha1('vanetssasite!@');
+define('LOGIN_COOKIE_NAME',   'van');
+define('LOGIN_COOKIE_EXPIRE', 0);
+define('LOGIN_COOKIE_DOMAIN', 'vanetssa.com');
 
 /* End of file constants.php */
 /* Location: ./application/config/constants.php */

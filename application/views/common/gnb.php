@@ -29,16 +29,31 @@
           </ul>
         </li>
       </ul>
-      <form class="navbar-form navbar-right" role="form" action="/user/auth/login">
+      <?php if(!$this->_user){ ?>
+      <form class="navbar-form navbar-right" role="form" action="/user/auth/getauth" method="post">
         <div class="form-group">
           <input type="text" placeholder="Email" class="form-control" name="email">
         </div>
         <div class="form-group">
-          <input type="password" placeholder="Password" class="form-control" name="pass">
+          <input type="password" placeholder="Password" class="form-control" name="passwd">
         </div>
-        <button type="submit" class="btn btn-success">Sign in</button>
+        <button type="submit" class="btn btn-success">Login</button>
         <button type="button" class="btn btn-primary" onclick="location.href='/user/auth/join'">Join</button>
       </form>
+      <?php }else{ ?>
+      <ul class="nav navbar-nav navbar-right">
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+            <?php echo $this->_user->name; ?> <span class="caret"></span>
+          </a>
+          <ul class="dropdown-menu" role="menu">
+            <li><a href="#">내 정보 확인</a></li>
+            <li class="divider"></li>
+            <li><a href="/user/auth/logout">Logout</a></li>
+          </ul>
+        </li>
+      </ul>
+      <?php } ?>
     </div><!--/.nav-collapse -->
   </div>
 </nav>

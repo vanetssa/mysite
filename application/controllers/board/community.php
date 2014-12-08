@@ -25,7 +25,7 @@ class Community extends MY_Controller {
 		$this->_searchParam = $searchParam;
 	}
 
-	private function setBoardData($boardID){		
+	private function setBoardData($boardID){
 		try{
 			$data = array();
 			$this->_thisBoard = $this->_boardInfo[$boardID];
@@ -135,8 +135,7 @@ class Community extends MY_Controller {
 		$content    = $this->input->post('content');
 		$imgfile    = $this->input->post('imgfile');
 		$dataID     = $this->input->post('dataID');
-
-		$userID     = 1000000000;
+		$userID     = $this->_user->userID;
 
 		if($dataID){
 			$rst = $this->board->modifyContent($dataID,$boardID,$categoryID,$title,$content,$imgfile);			

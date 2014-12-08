@@ -1,6 +1,8 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 	class MY_Controller extends CI_Controller{
+
+		const EOL = "\r\n";
 		
 		var $_styleSheet = array();
 		var $_headScript = array();
@@ -16,18 +18,19 @@
 
 		var $_isMobile = false;
 		var $_agent    = '';
+		var $_user     = array();
 
 		function __construct() {
 			parent::__construct();
 
-			$this->_styleSheet[] = 'bootstrap/bootstrap.min.css';
-			$this->_styleSheet[] = 'bootstrap/bootstrap-theme.min.css';
-			$this->_styleSheet[] = 'bootstrap/docs.min.css';
-			$this->_styleSheet[] = 'bootstrap/theme.css';
+			$this->_styleSheet[] = '/bootstrap/css/bootstrap.min.css';
+			$this->_styleSheet[] = '/bootstrap/css/bootstrap-theme.min.css';
+			$this->_styleSheet[] = '/bootstrap/css/docs.min.css';
+			$this->_styleSheet[] = '/bootstrap/css/theme.css';
 
 			$this->_footScript[] = 'common/jquery.js';
 			$this->_footScript[] = 'common/jquery.form.min.js';
-			$this->_footScript[] = 'bootstrap/bootstrap.min.js';
+			$this->_footScript[] = '/bootstrap/js/bootstrap.min.js';
 			$this->_footScript[] = 'common/ie10-viewport-bug-workaround.js';
 			$this->_footScript[] = 'common.js';
 
@@ -45,6 +48,7 @@
 			$this->dbs = $this->load->database('DBS',true);
 
 			$this->load->model('content/board_m','board');
+			$this->load->model('common/user_m','user');
 
 			$boardList = $this->board->getBoardFromFile();
 			$boardInfo = array();
@@ -61,6 +65,11 @@
 
 			$this->_boardInfo = $boardInfo;
 			$this->_community = $community;
+
+			$cookie = $this->user->getCookieInfo();			
+			if($cookie){
+				$this->_user = $cookie;
+			}
 
 			$this->checkAgent();
 		}
@@ -120,9 +129,33 @@
 			exit;
 		}
 
-		protected function movePage($url,$set301=flase){
+		protected function displayScript($script){
+			$script = '<script type="text/javascript" language="JavaScript">'.$this::EOL
+				. '//<![CDATA['.$this::EOL
+				. $script.$this::EOL
+				. '//]]>'.$this::EOL
+				.'</script>'.$this::EOL;
+
+			echo $script;
+		}
+
+		protected function displayAlert($msg){
+			$script = 'alert("'.$msg.'")';
+			$this->displayScript($script);
+		}
+
+		protected function movePage($url,$msg='',$set301=false){
+			if(!empty($msg)){ $this->displayAlert($msg); }
 			if($set301){ @header("HTTP/1.1 301 Moved Permanently"); }
-			@header('Location : '.$url);
+			$this->displayScript("location.href='".$url."';");
+			//@header('Location : '.$url);
 			exit;
+		}
+
+		protected function checkLogin(){
+			if(empty($this->_user)){
+				$this->user->logout();
+				$this->movePage('/','로그인이 필요 합니다.');
+			}
 		}
 	}

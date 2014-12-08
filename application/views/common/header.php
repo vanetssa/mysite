@@ -20,16 +20,24 @@
         <?php
             if(!empty($this->_styleSheet)){            
                 foreach($this->_styleSheet as $_css){
-                    echo '<link href="/css/'.$_css.'" rel="stylesheet">';
+                    if(substr($_css,0,1) == '/'){
+                        echo '<link href="'.$_css.'" rel="stylesheet">';
+                    }else{
+                        echo '<link href="/css/'.$_css.'" rel="stylesheet">';
+                    }                    
                 }
             }
         ?>        
 
         <!-- Head JS -->
         <?php
-            if(!empty($this->_headScript)){            
+            if(!empty($this->_headScript)){
                 foreach($this->_headScript as $_js){
-                    echo '<script src="/js/'.$_js.'"></script>';
+                    if(substr($_js,0,1) == '/'){
+                        echo '<script src="'.$_js.'"></script>';
+                    }else{
+                        echo '<script src="/js/'.$_js.'"></script>';
+                    }
                 }
             }
         ?>

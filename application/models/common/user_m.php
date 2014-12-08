@@ -5,7 +5,7 @@ class User_m extends MY_Model {
 	const USER_STATUS_NORMAL = 'AA';
 	const USER_STATUS_BLOCK  = 'BA';
 	const USER_STATUS_DELETE = 'CA';
-	
+
 	var $USER_STATUS = array();
 	var $CODE_DATA   = array();
 
@@ -18,6 +18,7 @@ class User_m extends MY_Model {
 
 		$this->CODE_DATA['USER_STATUS'] = $this->USER_STATUS;		
 
+		$this->load->library('encrypt');
 		$this->load->helper('file');
 	}
 
@@ -110,32 +111,37 @@ class User_m extends MY_Model {
 	 * @param int $userID 사용자 ID
 	 * @param string $email 사용자 email
 	 * @param string $passwd 비밀번호
-	 * @return void
+	 * @return array
 	 */
 	public function getUser($userID,$email,$passwd){
-		$sql = 'SELECT * FROM `User`.`UserData`';
+		$sql = 'SELECT * FROM `USER`.`UserData`';
 
 		$where = array();
 		$bindData = array();
 
 		$where[] = '`Status` = "AA"';
 		if(!empty($userID)){ $where[] = '`ID` = ?'; $bindData[] = $userID; }
-		if(!empty($email)){ $where[] = '`Email` = ?'; $bindData[] = $email; }
+		if(!empty($email)){ $where[] = '`Email` = ?'; $bindData[] = trim($email); }
 		if(!empty($passwd)){ $where[] = '`PassWord` = ?'; $bindData[] = md5(trim($passwd)); }
 
 		if(!empty($where)){
 			$sql .= ' WHERE '.implode(' AND ',$where);
 		}
 
-		$rstData = array();
-		$res = $this->dbs->query($sql,$bindData);
+		try{
+			$res = $this->dbs->query($sql,$bindData);
+		}catch(Exception $e){
+			throw new Exception($e->getMessage().'|'.__LINE__, 100);
+		}
 
+		$rstData = array();
 		foreach($res->result() as $row){
 			$data = array();
 			$data['userID']      = $row->ID;
 			$data['name']        = $row->Name;
 			$data['email']       = $row->Email;
 			$data['status']      = $row->Status;
+			$data['type']        = $row->Type;
 			$data['createDate']  = !empty($row->CreateDate)?substr($row->CreateDate,0,16):'';
 			$data['modifyDate']  = !empty($row->ModifyDate)?substr($row->ModifyDate,0,16):'';
 			$data['statusValue'] = $this->getCodeValue('USER_STATUS',$data['status']);
@@ -144,5 +150,96 @@ class User_m extends MY_Model {
 		}
 
 		return $rstData;
+	}
+
+	/**
+	 * 로그인 정보 가져오기
+	 * 
+	 * @access private
+	 * @param string $email 이메일주소
+	 * @param string $passwd 비밀번호
+	 * @return array
+	 */
+	private function getLoginInfo($email,$passwd){
+		$userInfo = $this->getUser('',$email,$passwd);
+		if(empty($userInfo[0])){
+			return array();
+		}else{
+			return $userInfo[0];
+		}
+	}
+
+	/**
+	 * 로그인
+	 * 
+	 * @access public
+	 * @param string $email 이메일주소
+	 * @param string $passwd 비밀번호
+	 * @return boolean
+	 */
+	public function login($email,$passwd){
+		if(empty($email) || empty($passwd)){ return false; }
+		$userInfo = $this->getLoginInfo($email,$passwd);
+		if(empty($userInfo)){
+			return false;
+		}else{
+			$cookieValue = array();
+			$cookieValue['userID'] = $userInfo['userID'];
+			$cookieValue['name']   = $userInfo['name'];
+			$cookieValue['email']  = $userInfo['email'];
+			$cookieValue['status'] = $userInfo['status'];
+			$cookieValue['type']   = $userInfo['type'];
+
+			$encStr = base64_encode($this->encrypt->encode(json_encode($cookieValue),LOGIN_COOKIE_KEY));
+
+			$cookie = array(
+				'name'   => LOGIN_COOKIE_NAME,
+				'value'  => $encStr,
+				'expire' => LOGIN_COOKIE_EXPIRE,
+				'domain' => LOGIN_COOKIE_DOMAIN,
+				'path'   => '/',
+				'prefix' => '',
+				'secure' => FALSE
+			);
+
+			$this->input->set_cookie($cookie);
+
+			return true;
+		}
+	}
+
+	/**
+	 * 로그아웃
+	 * 
+	 * @access public
+	 * @return boolean
+	 */
+	public function logout(){
+		$cookie = array(
+			'name'   => LOGIN_COOKIE_NAME,
+			'value'  => '',
+			'expire' => 0,
+			'domain' => LOGIN_COOKIE_DOMAIN,
+			'path'   => '/',
+			'prefix' => '',
+			'secure' => FALSE
+		);
+
+		$this->input->set_cookie($cookie);
+
+		return true;
+	}
+
+	/**
+	 * 로그인 정보 가져오기
+	 * 
+	 * @access public
+	 * @return array
+	 */
+	public function getCookieInfo(){
+		$cookieValue = $this->input->cookie(LOGIN_COOKIE_NAME);
+		$descStr = $this->encrypt->decode(base64_decode($cookieValue),LOGIN_COOKIE_KEY);
+		$result = json_decode($descStr);
+		return $result;
 	}
 }
