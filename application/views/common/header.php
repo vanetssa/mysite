@@ -11,7 +11,8 @@
 
         <!-- favicon -->
 
-        <link rel="icon" href="/favicon.ico">
+        <link rel="icon" href="/favicon.ico">        
+        <link rel="apple-touch-icon" sizes="32x32" href="/favicon.ico">
 
         <!-- TITLE -->
         <title><?php echo !empty($this->_title)?$this->_title:'van site'; ?></title>
