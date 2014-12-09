@@ -1,3 +1,6 @@
+<div class="page-header">
+  <h1>여기가 메인이지</h1>
+</div>
 <div id="myCarousel" class="carousel slide" data-ride="carousel">
   <!-- Indicators -->
   <ol class="carousel-indicators">
@@ -11,9 +14,11 @@
       <img src="/img/main/main_slide_1.jpg" alt="First slide">
       <div class="container">
         <div class="carousel-caption">
-          <h1>Example headline.</h1>
-          <p>Note: If you're viewing this page via a <code>file://</code> URL, the "next" and "previous" Glyphicon buttons on the left and right might not load/display properly due to web browser security rules.</p>
+          <h1>아침고요 수목원</h1>
+          <p><code>한마디:</code> 춥다...한번쯤 가볼만 하다.</p>
+          <?php /* ?>
           <p><a class="btn btn-lg btn-primary" href="#" role="button">Sign up today</a></p>
+          <?php */ ?>
         </div>
       </div>
     </div>
@@ -21,19 +26,17 @@
       <img src="/img/main/main_slide_2.jpg" alt="Second slide">
       <div class="container">
         <div class="carousel-caption">
-          <h1>Another example headline.</h1>
-          <p>Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
-          <p><a class="btn btn-lg btn-primary" href="#" role="button">Learn more</a></p>
+          <h1>동해 일출</h1>
+          <p><code>한마디:</code> 내가 찍은 거지만 대단함</p>
         </div>
       </div>
     </div>
     <div class="item">
       <img src="/img/main/main_slide_3.jpg" alt="Third slide">
       <div class="container">
-        <div class="carousel-caption">
-          <h1>One more for good measure.</h1>
-          <p>Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
-          <p><a class="btn btn-lg btn-primary" href="#" role="button">Browse gallery</a></p>
+        <div class="carousel-caption">          
+          <h1>방콕 왕궁</h1>
+          <p><code>한마디:</code> 비가와서 잘 못봤지만 그냥 뭐 그렇다...</p>          
         </div>
       </div>
     </div>
@@ -41,9 +44,8 @@
       <img src="/img/main/main_slide_4.jpg" alt="Third slide">
       <div class="container">
         <div class="carousel-caption">
-          <h1>One more for good measure.</h1>
-          <p>Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
-          <p><a class="btn btn-lg btn-primary" href="#" role="button">Browse gallery</a></p>
+          <h1>파타야 근처 산호섬</h1>
+          <p><code>한마디:</code> 탈의실, 샤워시설 최악이다. 모래가 엄청 뜨겁다.</p>
         </div>
       </div>
     </div>

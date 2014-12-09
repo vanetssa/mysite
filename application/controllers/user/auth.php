@@ -14,7 +14,10 @@ class Auth extends MY_Controller {
 	}
 
 	public function login(){
-		$this->load_view('user/auth/login');	
+		if($this->_user){
+			$this->movePage('/');
+		}
+		$this->load_view('user/auth/login');
 	}
 
 	public function save($userID=''){

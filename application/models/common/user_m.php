@@ -81,27 +81,45 @@ class User_m extends MY_Model {
 	 * 회원정보 수정
 	 * 
 	 * @access public
+	 * @param int $userID 사용자ID
 	 * @param string $name 사용자명
 	 * @param string $passwd 비밀번호
 	 * @return void
 	 */
-	public function modUser($userID,$name,$passwd){
+	public function modUser($userID,$name='',$passwd=''){		
+
+		$set  = array();
+		$bind = array();
+
+		$set[] = '`ModifyDate`=now()';
+		if(!empty($name)){ $set[] = '`Name`=?'; $bind[] = trim($name); }
+		if(!empty($passwd)){ $set[] = '`PassWord`=?'; $bind[] = md5(trim($passwd)); }
+		
+		$bind[] = $userID;
+
 		$sql = '
 			UPDATE `USER`.`UserData` SET 
-			`Name`=?,`PassWord`=?,`ModifyDate`=now()
+				'.implode(",",$set).'
 			WHERE ID = ?
 		';
 
-		$data = array();
-		$data[] = trim($name);
-		$data[] = md5(trim($passwd));
-		$data[] = $userID;
-
 		try{
-  			$this->dbm->query($sql,$data);
+  			$this->dbm->query($sql,$bind);
   		}catch(Exception $e){
   			throw new Exception($e->getMessage().'|'.__LINE__, 100);
   		}
+	}
+
+	/**
+	 * 비밀번호 수정
+	 * 
+	 * @access public
+	 * @param int $userID 사용자ID
+	 * @param string $passwd 새 비밀번호
+	 * @return void
+	 */
+	public function changePass($userID,$passwd){
+		$this->modUser($userID,'',$passwd);
 	}
 
 	/**
