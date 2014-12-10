@@ -11,8 +11,11 @@
 
         <!-- favicon -->
 
-        <link rel="icon" href="/favicon.ico">        
-        <link rel="apple-touch-icon" sizes="32x32" href="/favicon.ico">
+        <link rel="icon" href="/img/favicon/favicon.ico">        
+        <link rel="apple-touch-icon" sizes="60x60" href="/img/favicon/icon_60x60.jpg">
+        <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon/icon_76x76.jpg">
+        <link rel="apple-touch-icon" sizes="120x120" href="/img/favicon/icon_120x120.jpg">
+        <link rel="apple-touch-icon" sizes="152x152" href="/img/favicon/icon_152x152.jpg">
 
         <!-- TITLE -->
         <title><?php echo !empty($this->_title)?$this->_title:'van site'; ?></title>
