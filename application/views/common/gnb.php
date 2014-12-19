@@ -30,14 +30,8 @@
         </li>
       </ul>
       <?php if(!$this->_user){ ?>
-      <form class="navbar-form navbar-right" role="form" action="/user/auth/getauth" method="post">
-        <div class="form-group">
-          <input type="text" placeholder="Email" class="form-control" name="email">
-        </div>
-        <div class="form-group">
-          <input type="password" placeholder="Password" class="form-control" name="passwd">
-        </div>
-        <button type="submit" class="btn btn-success">Login</button>
+      <form class="navbar-form navbar-right" role="form">
+        <button type="button" class="btn btn-success" onclick="location.href='/user/auth/login'">Login</button>
         <button type="button" class="btn btn-primary" onclick="location.href='/user/auth/join'">Join</button>
       </form>
       <?php }else{ ?>

@@ -102,3 +102,14 @@ commonFunction = {
 		location.href = '/user/auth/login';
 	}
 };
+
+var messageFunction = {};
+messageFunction = {
+	show:function(target,msg){
+		$('div.alert').hide();
+		$('#'+target).html(msg).show();
+	}
+	,showSuccess:function(msg){
+		messageFunction.show('alertSuccessBar',msg);
+	}
+}

@@ -6,6 +6,10 @@ class User_m extends MY_Model {
 	const USER_STATUS_BLOCK  = 'BA';
 	const USER_STATUS_DELETE = 'CA';
 
+	const SNS_TYPE_FACEBOOK = 'FB';
+	const SNS_TYPE_NAVER    = 'NV';
+	const SNS_TYPE_GOOGLE   = 'GG';
+
 	var $USER_STATUS = array();
 	var $CODE_DATA   = array();
 
@@ -153,21 +157,32 @@ class User_m extends MY_Model {
 		}
 
 		$rstData = array();
-		foreach($res->result() as $row){
-			$data = array();
-			$data['userID']      = $row->ID;
-			$data['name']        = $row->Name;
-			$data['email']       = $row->Email;
-			$data['status']      = $row->Status;
-			$data['type']        = $row->Type;
-			$data['createDate']  = !empty($row->CreateDate)?substr($row->CreateDate,0,16):'';
-			$data['modifyDate']  = !empty($row->ModifyDate)?substr($row->ModifyDate,0,16):'';
-			$data['statusValue'] = $this->getCodeValue('USER_STATUS',$data['status']);
-
-			$rstData[] = $data;
+		foreach($res->result() as $row){			
+			$rstData[] = $this->setUserData($row);
 		}
 
 		return $rstData;
+	}
+
+	/**
+	 * 회원정보 데이터 만들기
+	 * 
+	 * @access private
+	 * @param array $userInfo 회원 정보
+	 * @return array
+	 */
+	private function setUserData($userInfo){
+		$data = array();
+		$data['userID']      = $userInfo->ID;
+		$data['name']        = $userInfo->Name;
+		$data['email']       = $userInfo->Email;
+		$data['status']      = $userInfo->Status;
+		$data['type']        = $userInfo->Type;
+		$data['createDate']  = !empty($userInfo->CreateDate)?substr($userInfo->CreateDate,0,16):'';
+		$data['modifyDate']  = !empty($userInfo->ModifyDate)?substr($userInfo->ModifyDate,0,16):'';
+		$data['statusValue'] = $this->getCodeValue('USER_STATUS',$data['status']);
+
+		return $data;
 	}
 
 	/**
@@ -191,13 +206,10 @@ class User_m extends MY_Model {
 	 * 로그인
 	 * 
 	 * @access public
-	 * @param string $email 이메일주소
-	 * @param string $passwd 비밀번호
+	 * @param array $userInfo 사용자정보
 	 * @return boolean
 	 */
-	public function login($email,$passwd){
-		if(empty($email) || empty($passwd)){ return false; }
-		$userInfo = $this->getLoginInfo($email,$passwd);
+	public function login($userInfo){		
 		if(empty($userInfo)){
 			return false;
 		}else{
@@ -259,5 +271,197 @@ class User_m extends MY_Model {
 		$descStr = $this->encrypt->decode(base64_decode($cookieValue),LOGIN_COOKIE_KEY);
 		$result = json_decode($descStr);
 		return $result;
+	}
+
+	/**
+	 * SNS 계정 가져오기
+	 * 
+	 * @access public
+	 * @param int $userID 사용자ID
+	 * @param string $type SNS타입
+	 * @param string $snsID SNSID
+	 * @return array
+	 */
+	public function getSNSAccount($userID,$type,$snsID=''){
+		if($snsID){
+			$sql = 'SELECT ID,UserID,SNSID,Email,Status FROM `USER`.`UserSNS` WHERE `SNSID` = ? AND `Type` = ?';
+			$data = array($snsID,$type);
+		}else{
+			$sql = 'SELECT ID,UserID,SNSID,Email,Status FROM `USER`.`UserSNS` WHERE `UserID` = ? AND `Type` = ?';
+			$data = array($userID,$type);
+		}
+
+		try{
+			$res = $this->dbs->query($sql,$data);
+			if ($res->num_rows() > 0){
+   				$row = $res->row();
+   				return array('id'=>$row->ID,'userID'=>$row->UserID,'snsID'=>$row->SNSID,'email'=>$row->Email,'status'=>$row->Status);
+			}else{
+				return array();
+			}
+		}catch(Exception $e){
+			throw new Exception($e->getMessage().'|'.__LINE__, 100);
+		}
+	}
+
+	/**
+	 * SNS계정정보로 사용자 정보 가져오기
+	 * 
+	 * @access public
+	 * @param string $snsType SNS타입
+	 * @param string $snsID SNSID
+	 * @param string $snsEmail SNS Email
+	 * @return array
+	 */
+	public function getUserBySNS($snsType,$snsID='',$snsEmail=''){
+		$sql = 'SELECT `UserData`.* FROM `USER`.`UserData`, `USER`.`UserSNS` WHERE `UserData`.`ID` = `UserSNS`.`UserID` AND `UserSNS`.`Type` = ?';
+		
+		$data = array();
+		$data[] = $snsType;
+
+		if($snsID){
+			$sql .= ' AND `UserSNS`.`SNSID` = ?';
+			$data[] = trim($snsID);
+		}
+
+		if($snsEmail){
+			$sql .= ' AND `UserSNS`.`Email` = ?';
+			$data[] = trim($snsEmail);	
+		}
+
+		try{
+			$res = $this->dbs->query($sql,$data);
+			if ($res->num_rows() > 0){
+   				$row = $res->row();
+   				return $this->setUserData($row);   				
+			}else{
+				return array();
+			}
+		}catch(Exception $e){
+			throw new Exception($e->getMessage().'|'.__LINE__, 100);
+		}
+	}
+
+	/**
+	 * SNS 계정 연결하기
+	 * 
+	 * @access public
+	 * @param int $userID 사용자ID
+	 * @param string $snsID 사용자의 SNS ID
+	 * @param string $email 사용자의 Email
+	 * @param string $type SNS타입
+	 * @return array
+	 */
+	public function setSNSAccount($userID,$snsID,$email,$type){
+		$snsAcc = $this->getSNSAccount($userID,$type);
+		if(!empty($snsAcc)){
+			if($snsAcc['status'] == 'AA'){
+				return array('rst'=>'exist','data'=>$snsAcc);
+			}else{
+				$this->recoverySNSAccount($userID,$type);
+				return array('rst'=>'recovery','data'=>$snsAcc);
+			}
+		}else{
+			$sql = 'INSERT INTO `USER`.`UserSNS` VALUES ("",?,?,?,?,"AA",now(),now())';
+
+			$data = array();
+			$data[] = $userID;
+			$data[] = $snsID;
+			$data[] = trim($email);
+			$data[] = $type;
+
+			try{
+				$res = $this->dbm->query($sql,$data);
+				return array('rst'=>'new','data'=>array());
+			}catch(Exception $e){
+				throw new Exception($e->getMessage().'|'.__LINE__, 100);
+			}
+		}
+	}
+
+	/**
+	 * SNS 계정 끊기
+	 * 
+	 * @access public
+	 * @param int $userID 사용자ID
+	 * @param string $type SNS타입
+	 * @return void
+	 */
+	public function disconnectSNSAccount($userID,$type){
+		$sql = 'UPDATE `USER`.`UserSNS` SET `Status` = "CA",`ModifyDate` = now() WHERE UserID = ?, Type = ?';
+
+		$data = array();
+		$data[] = $userID;
+		$data[] = $type;
+
+		try{
+			$res = $this->dbm->query($sql,$data);
+		}catch(Exception $e){
+			throw new Exception($e->getMessage().'|'.__LINE__, 100);
+		}
+	}
+
+	/**
+	 * SNS 계정 복원
+	 * 
+	 * @access public
+	 * @param int $userID 사용자ID
+	 * @param string $type SNS타입
+	 * @return void
+	 */
+	public function recoverySNSAccount($userID,$type){
+		$sql = 'UPDATE `USER`.`UserSNS` SET `Status` = "AA",`ModifyDate` = now() WHERE UserID = ?, Type = ?';
+
+		$data = array();
+		$data[] = $userID;
+		$data[] = $type;
+
+		try{
+			$res = $this->dbm->query($sql,$data);
+		}catch(Exception $e){
+			throw new Exception($e->getMessage().'|'.__LINE__, 100);
+		}
+	}
+
+	/**
+	 * 페이스북 계정 연결
+	 * 
+	 * @access public
+	 * @param int $userID 사용자ID
+	 * @param string $facebookID 페이스북ID
+	 * @param string $email 이메일주소
+	 * @param string $type SNS 타입
+	 * @return array
+	 */
+	public function setFacebookAccount($userID,$facebookID,$email){
+		return $this->setSNSAccount($userID,$facebookID,$email,$this::SNS_TYPE_FACEBOOK);
+	}
+
+	/**
+	 * 네이버 계정 연결
+	 * 
+	 * @access public
+	 * @param int $userID 사용자ID
+	 * @param string $naverID 네이버ID
+	 * @param string $email 이메일주소
+	 * @param string $type SNS 타입
+	 * @return array
+	 */
+	public function setNaverAccount($userID,$naverID,$email){
+		return $this->setSNSAccount($userID,$naverID,$email,$this::SNS_TYPE_NAVER);
+	}
+
+	/**
+	 * 구글 계정 연결
+	 * 
+	 * @access public
+	 * @param int $userID 사용자ID
+	 * @param string $googleID 구글ID
+	 * @param string $email 이메일주소
+	 * @param string $type SNS 타입
+	 * @return array
+	 */
+	public function setGoogleAccount($userID,$googleID,$email){
+		return $this->setSNSAccount($userID,$googleID,$email,$this::SNS_TYPE_GOOGLE);
 	}
 }

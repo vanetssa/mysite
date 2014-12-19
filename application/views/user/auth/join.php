@@ -1,4 +1,6 @@
 <form class="form-horizontal" role="form" action="/user/auth/save" method="post" id="saveForm" name="saveForm">
+  <input type="hidden" name="snsType"  id="snsType"  value="">
+  <input type="hidden" name="snsID"    id="snsID"    value="">
   <div class="form-group">
     <label for="email" class="col-sm-2 control-label">Email</label>
     <div class="col-sm-4">
@@ -26,6 +28,10 @@
   <div class="form-group">
     <div class="col-sm-offset-2 col-sm-4">
       <button type="button" class="btn btn-primary" data-name="actionBtn" data-act="signup">Sign up</button>
+      <div id="googleSignupBtn" class="googleSignupBtn" data-name="actionBtn" data-act="getGoogle">
+        <span class="icon"></span>
+        <span class="buttonText">Google</span>
+      </div>
     </div>
   </div>
 </form>

@@ -32,6 +32,7 @@
 			$this->_footScript[] = 'common/jquery.form.min.js';
 			$this->_footScript[] = '/bootstrap/js/bootstrap.min.js';
 			$this->_footScript[] = 'common/ie10-viewport-bug-workaround.js';
+			$this->_footScript[] = 'const.js';
 			$this->_footScript[] = 'common.js';
 
 			$this->_title = 'van site';

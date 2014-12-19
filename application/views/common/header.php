@@ -52,3 +52,7 @@
     <body role="document">
     <?php include_once('gnb.php'); ?>
     <div class="container theme-showcase" role="main" id="siteBody">
+    <div class="alert alert-success" id="alertSuccessBar" role="alert" style="display:none;"></div>
+    <div class="alert alert-info"    id="alertInfoBar"    role="alert" style="display:none;"></div>
+    <div class="alert alert-warning" id="alertWarningBar" role="alert" style="display:none;"></div>
+    <div class="alert alert-danger"  id="alertDangerBar"  role="alert" style="display:none;"></div>
