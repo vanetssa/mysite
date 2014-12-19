@@ -17,7 +17,7 @@ class Auth extends MY_Controller {
 
 	public function login(){
 		$this->_styleSheet[] = 'sns/google.css';
-		$this->_headScript[] = 'common/google.js';
+		$this->_headScript[] = 'common/gg_connect.js';
 		$this->_footScript[] = 'user/login.js';
 
 		if($this->_user){
