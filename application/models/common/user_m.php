@@ -188,12 +188,12 @@ class User_m extends MY_Model {
 	/**
 	 * 로그인 정보 가져오기
 	 * 
-	 * @access private
+	 * @access public
 	 * @param string $email 이메일주소
 	 * @param string $passwd 비밀번호
 	 * @return array
 	 */
-	private function getLoginInfo($email,$passwd){
+	public function getLoginInfo($email,$passwd){
 		$userInfo = $this->getUser('',$email,$passwd);
 		if(empty($userInfo[0])){
 			return array();

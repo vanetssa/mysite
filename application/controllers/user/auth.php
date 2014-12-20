@@ -28,8 +28,8 @@ class Auth extends MY_Controller {
 
 	public function save($userID=''){
 		$email = $this->input->post('email');
-		$passwd = $this->input->post('passwd');
-		$passwdConfirm = $this->input->post('passwdConfirm');
+		$passwd = $this->input->post('password');
+		$passwdConfirm = $this->input->post('passwordConfirm');
 		$name = $this->input->post('name');
 
 		if($passwd == $passwdConfirm){
