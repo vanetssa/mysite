@@ -49,7 +49,7 @@ userLogin = {
 	}
 	,signin:function(){
 		var email  = $('#email').val().trim();
-		var passwd = $('#password').val().trim();	
+		var passwd = $('#passwd').val().trim();	
 
 		if(!email){
 			alert('이메일 제대로 입력 합시다~');
