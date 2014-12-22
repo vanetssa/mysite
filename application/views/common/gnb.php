@@ -41,7 +41,7 @@
             <span class="glyphicon glyphicon-user" aria-hidden="true"></span> <?php echo $this->_user->name; ?>
           </a>
           <ul class="dropdown-menu" role="menu">
-            <li><a href="#">내 정보 확인</a></li>
+            <li><a href="/user/info/view">내 정보 확인</a></li>
             <li class="divider"></li>
             <li><a href="/user/auth/logout">Logout</a></li>
           </ul>

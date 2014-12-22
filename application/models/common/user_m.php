@@ -135,7 +135,7 @@ class User_m extends MY_Model {
 	 * @param string $passwd 비밀번호
 	 * @return array
 	 */
-	public function getUser($userID,$email,$passwd){
+	public function getUser($userID,$email='',$passwd=''){
 		$sql = 'SELECT * FROM `USER`.`UserData`';
 
 		$where = array();
@@ -186,14 +186,30 @@ class User_m extends MY_Model {
 	}
 
 	/**
+	 * 유저정보 가져오기.
+	 * 
+	 * @access public
+	 * @param int $userID 사용자ID
+	 * @return array
+	 */
+	public function getUserDetail($userID){
+		$userInfo = $this->getUser($userID);
+		if(empty($userInfo[0])){
+			return array();
+		}else{
+			return $userInfo[0];
+		}
+	}
+
+	/**
 	 * 로그인 정보 가져오기
 	 * 
-	 * @access private
+	 * @access public
 	 * @param string $email 이메일주소
 	 * @param string $passwd 비밀번호
 	 * @return array
 	 */
-	private function getLoginInfo($email,$passwd){
+	public function getLoginInfo($email,$passwd){
 		$userInfo = $this->getUser('',$email,$passwd);
 		if(empty($userInfo[0])){
 			return array();

@@ -14,17 +14,31 @@ function signinCallback(authResult){
 	}
 }
 
-function getEmailCallback(obj){	
+function getEmailCallback(obj){
 	if(obj['email']){
 		$('#snsType').val('GG').attr('readonly',true);
 		$('#snsID').val(obj['id']).attr('readonly',true);
 		$('#email').val(obj['email']).attr('readonly',true);
 		$('#name').val(obj['name']);
-		
-		$('#password').attr('readonly',true).closest('div.form-group').hide();
-		$('#passwordConfirm').attr('readonly',true).closest('div.form-group').hide();
 
-		$('#saveForm').attr('action','/user/auth/setsns');
+		var ajaxOption = ajaxCommonOpt;
+		ajaxOption.url = '/user/auth/checksns';
+		ajaxOption.data = {'snsType':'GG','snsID':obj['id']};
+		ajaxOption.success = function(res){
+			if(res.status == 200){
+				$('#password').attr('readonly',true).closest('div.form-group').hide();
+				$('#passwordConfirm').attr('readonly',true).closest('div.form-group').hide();
+
+				$('#saveForm').attr('action','/user/auth/setsns');		
+			}else{
+				if(res.status == 201){
+					location.href='/';
+				}else{
+					messageFunction.showDanger(res.msg);
+				}				
+			}
+		}
+		$.ajax(ajaxOption);
 	}
 }
 

@@ -1,12 +1,13 @@
+var ajaxCommonOpt = {};
+ajaxCommonOpt.dataType    = 'json';
+ajaxCommonOpt.type        = 'post';
+ajaxCommonOpt.timeout     = 5000;
+ajaxCommonOpt.async       = true;
+ajaxCommonOpt.cache       = true;
+
 var ajaxManager = {};
 ajaxManager = {
-	opt:{
-		dataType:'json',
-		type:'post',
-		timeout:5000,
-		async:true,
-		cache:true
-	}
+	opt:ajaxCommonOpt
 	,setUrl:function(url){
 		if(url){ ajaxManager.opt.url = url;	}
 	}
@@ -108,8 +109,18 @@ messageFunction = {
 	show:function(target,msg){
 		$('div.alert').hide();
 		$('#'+target).html(msg).show();
+		setTimeout( "$('div.alert').hide();",3000 );
 	}
 	,showSuccess:function(msg){
 		messageFunction.show('alertSuccessBar',msg);
+	}
+	,showInfo:function(msg){
+		messageFunction.show('alertInfoBar',msg);
+	}
+	,showWarning:function(msg){
+		messageFunction.show('alertWarningBar',msg);
+	}
+	,showDanger:function(msg){
+		messageFunction.show('alertDangerBar',msg);
 	}
 }

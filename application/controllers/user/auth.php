@@ -28,9 +28,14 @@ class Auth extends MY_Controller {
 
 	public function save($userID=''){
 		$email = $this->input->post('email');
-		$passwd = $this->input->post('passwd');
-		$passwdConfirm = $this->input->post('passwdConfirm');
+		$passwd = $this->input->post('password');
+		$passwdConfirm = $this->input->post('passwordConfirm');
 		$name = $this->input->post('name');
+
+		$userInfo = $this->user->getUser('',$email);
+		if($userInfo){
+			$this->json_view(array(),500,'가입된 이메일 주소 입니다.');
+		}
 
 		if($passwd == $passwdConfirm){
 			if($userID){
@@ -69,10 +74,10 @@ class Auth extends MY_Controller {
 	}
 
 	public function getauth(){
-		$email   = $this->input->post('email');
-		$passwd  = $this->input->post('passwd');
-		$snsID   = $this->input->post('snsID');
-		$snsType = $this->input->post('snsType');
+		$email    = $this->input->post('email');
+		$password = $this->input->post('password');
+		$snsID    = $this->input->post('snsID');
+		$snsType  = $this->input->post('snsType');
 
 		if($snsID && $snsType){
 			$userInfo = $this->user->getUserBySNS($snsType,$snsID);
@@ -81,10 +86,10 @@ class Auth extends MY_Controller {
 				$this->json_view(array(),500,'이메일 주소를 입력 하세요.');
 			}
 
-			if(empty($passwd)){				
+			if(empty($password)){				
 				$this->json_view(array(),500,'비밀번호를 입력 하세요.');
 			}
-			$userInfo = $this->user->getLoginInfo($email,$passwd);
+			$userInfo = $this->user->getLoginInfo($email,$password);
 		}
 
 		$result = $this->user->login($userInfo);
@@ -93,6 +98,23 @@ class Auth extends MY_Controller {
 		}else{
 			$this->json_view(array(),500,'이메일과 비밀번호를 확인해바');
 		}
+	}
+
+	public function checksns(){
+		$snsType = $this->input->post('snsType');
+		$snsID   = $this->input->post('snsID');
+
+		if(!$snsID){
+			$this->json_view(array(),500,'SNS계정 확인!!!');
+		}
+
+		$userInfo = $this->user->getUserBySNS($snsType,$snsID);
+		if($userInfo){
+			$this->user->login($userInfo);
+			$this->json_view(array(),201);
+		}
+
+		$this->json_view();
 	}
 
 	public function logout(){

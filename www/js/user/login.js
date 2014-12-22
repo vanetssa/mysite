@@ -30,6 +30,12 @@ userLogin = {
 			userLogin.action($(this));
 		});
 
+		$('#siteBody').on('keydown','#password',function(e){
+			if(e.keyCode == 13){
+				$('button[data-act=signin]').trigger('click');
+			}
+		});
+
 		ajaxManager.setCallback(function(res){
 			if(res.status == 200){
 				location.href='/';

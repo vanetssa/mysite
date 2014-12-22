@@ -10,13 +10,13 @@ class Community extends MY_Controller {
 
 		$this->load->model('content/board_m','board');
 		$this->load->helper('form');
+		
+		$s_categoryID  = $this->input->get('s_categoryID')?$this->input->get('s_categoryID'):$this->input->post('s_categoryID');
+		$s_searchType  = $this->input->get('s_searchType')?$this->input->get('s_searchType'):$this->input->post('s_searchType');
+		$s_searchValue = $this->input->get('s_searchValue')?$this->input->get('s_searchValue'):$this->input->post('s_searchValue');
+		$s_pageNumber  = $this->input->get('s_pageNumber')?$this->input->get('s_pageNumber'):$this->input->post('s_pageNumber');
 
-		$s_categoryID  = $this->input->get('s_categoryID');
-		$s_searchType  = $this->input->get('s_searchType');
-		$s_searchValue = $this->input->get('s_searchValue');
-		$s_pageNumber  = $this->input->get('s_pageNumber');
-
-		$searchParam = array();
+		$searchParam = array();		
 		$searchParam['s_categoryID']  = $s_categoryID;
 		$searchParam['s_searchType']  = $s_searchType;
 		$searchParam['s_searchValue'] = $s_searchValue;
@@ -86,6 +86,10 @@ class Community extends MY_Controller {
 	public function drawData($dataID,$type='view'){
 		$message = $this->board->getContentDetail($dataID);
 
+		if(empty($message)){
+			$this->returnToList('삭제된 게시글 입니다.');
+		}
+
 		$this->setBoardData($message['boardID']);
 		$template = $this->board->getCodeValue('BOARD_TEMPLATE',$this->_thisBoard['type']);
 
@@ -146,5 +150,22 @@ class Community extends MY_Controller {
 		$rstData = array('dataID'=>$dataID);
 
 		$this->json_view($rstData);
+	}
+
+	public function remove($boardID){
+		$dataID = $this->input->post('dataID');
+		$userID = $this->input->post('userID');
+
+		if($userID != $this->_user->userID){
+			$this->board->deleteContent($dataID);
+		}
+
+		$this->setBoardData($boardID);
+
+		$this->returnToList();
+	}
+
+	private function returnToList($msg=''){
+		$this->movePage('/board/community/lists/'.$this->_thisBoard['id'].'?'.http_build_query($this->_searchParam),$msg);
 	}
 }

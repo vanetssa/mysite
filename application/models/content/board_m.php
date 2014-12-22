@@ -535,6 +535,23 @@ class Board_m extends MY_Model {
 	}
 
 	/**
+	 * 게시글 삭제
+	 * 
+	 * @access public
+	 * @param int $dataID 게시글 ID
+	 * @return void
+	 */
+	public function deleteContent($dataID){
+		$sql = 'UPDATE `BOARD`.`Data` SET `Status` = "CA" WHERE ID = ?';
+
+		try{
+  			$this->dbm->query($sql,array($dataID));
+  		}catch(Exception $e){
+  			throw new Exception($e->getMessage().'|'.__LINE__, 100);
+  		}
+	}
+
+	/**
 	 * 컨텐츠 내의 이미지 저장
 	 * 
 	 * @param int $dataID 게시글 ID
