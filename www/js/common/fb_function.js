@@ -8,7 +8,7 @@ var facebook = facebook || {};
  *	@param Array option 추가로 설정할 option
  * */
 facebook.init = function(appid,option){
-	config = {appId:appid,cookie:true};
+	config = {appId:appid,cookie:true,status:false,xfbml:false,version:'v2.1'};
 	config = $.extend(config,option);
 	FB.init(config);
 }
@@ -55,6 +55,7 @@ facebook.getPermission = function(scope,callback){
 	};
 	
 	FB.ui(permission,function(response){
+		console.log(response);
 		if(typeof callback == 'function'){
     		callback(response);
     	}
@@ -116,6 +117,46 @@ facebook.login = {
 facebook.getOauth = function(callback){
 	FB.getLoginStatus(function(response){
 		callback(response);
+	});
+}
+
+/**
+ * 페이스북 권한얻기 처리
+ */
+facebook.oauthProcess = function(scope,callback){
+	FB.getLoginStatus(function(response){
+		if(response.status == 'connected'){
+			if(typeof callback == 'function'){
+	        	callback(response);
+	        }
+		}else if(response.status == 'not_authorized'){
+			facebook.getPermission(scope,function(res){
+				if(res.status == 'connected'){
+					if(typeof callback == 'function'){
+	        			callback(response);
+	        		}
+				}
+			});
+		}else{
+			facebook.doLogin(scope,function(res){
+				if(res.status == 'connected'){
+					if(typeof callback == 'function'){
+	        			callback(response);
+	        		}
+				}
+			});
+		}
+	});
+}
+
+/**
+ * 로그인한 사용자 정보 가져오기
+ */
+facebook.getLoginUserInfo = function(callback){
+	FB.api('/me',function(response){		
+	    if(typeof callback == 'function'){
+			callback(response);
+		}
 	});
 }
 

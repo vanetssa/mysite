@@ -17,7 +17,7 @@ boardWrite = {
 		        	fileData = fileData[0].data;
 			        if (typeof(fileData.url) != 'undefined'){
 			            $('#imgbox').append('<input type="hidden" name="imgfile[]" value="' + (fileData.name+'|'+fileData.size+'|'+fileData.temp+'|'+fileData.ext) + '" />');
-			            $('#content').editorAppendTag('<img src="'+fileData.url+'" />');
+			            $('#content').editorAppendTag('<img src="'+fileData.url+'" class="img-rounded"/>');
 			        }
 		        }
 		    });

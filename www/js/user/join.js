@@ -1,5 +1,5 @@
 var userJoin = {};
-var googleSignupOpt = _googleApiConfig;
+var googleSignupOpt = objectCopy(_googleApiConfig);
 googleSignupOpt.callback = 'signinCallback';
 
 function signinCallback(authResult){
@@ -15,41 +15,57 @@ function signinCallback(authResult){
 }
 
 function getEmailCallback(obj){
-	if(obj['email']){
-		$('#snsType').val('GG').attr('readonly',true);
-		$('#snsID').val(obj['id']).attr('readonly',true);
-		$('#email').val(obj['email']).attr('readonly',true);
-		$('#name').val(obj['name']);
+	if(obj['email']){		
+		setSnsAccount(obj['id'],obj['email'],obj['name'],'GG');
+	}
+}
 
-		var ajaxOption = ajaxCommonOpt;
-		ajaxOption.url = '/user/auth/checksns';
-		ajaxOption.data = {'snsType':'GG','snsID':obj['id']};
-		ajaxOption.success = function(res){
-			if(res.status == 200){
-				$('#password').attr('readonly',true).closest('div.form-group').hide();
-				$('#passwordConfirm').attr('readonly',true).closest('div.form-group').hide();
+function setSnsAccount(snsID,snsEmail,snsName,snsType){
+	$('#snsType').val(snsType).attr('readonly',true);
+	$('#snsID').val(snsID).attr('readonly',true);
+	$('#email').val(snsEmail).attr('readonly',true);
+	$('#name').val(snsName);
 
-				$('#saveForm').attr('action','/user/auth/setsns');		
+	var ajaxOption = objectCopy(_ajaxCommonOpt);
+	ajaxOption.url = '/user/auth/checksns';
+	ajaxOption.data = {'snsType':snsType,'snsID':snsID};
+	ajaxOption.success = function(res){		
+		if(res.status == 200){
+			$('#password').attr('readonly',true).closest('div.form-group').hide();
+			$('#passwordConfirm').attr('readonly',true).closest('div.form-group').hide();
+
+			$('#saveForm').attr('action','/user/auth/setsns');
+		}else{
+			if(res.status == 201){
+				location.href='/';
 			}else{
-				if(res.status == 201){
-					location.href='/';
-				}else{
-					messageFunction.showDanger(res.msg);
-				}				
+				messageFunction.showDanger(res.msg);
 			}
 		}
-		$.ajax(ajaxOption);
 	}
+	$.ajax(ajaxOption);
 }
 
 userJoin = {
 	init:function(){
-		$('#siteBody').on('click','button[data-name=actionBtn],a[data-name=actionBtn],div[data-name=actionBtn]',function(){
+		$('#siteBody').on('click','button[data-name=actionBtn],a[data-name=actionBtn]',function(){
 			userJoin.action($(this));
 		});
+
+		facebook.init(_facebookApiConfig.appid,{});
 	}
 	,getGoogle:function(){
 		gapi.signin.render('googleSignupBtn',googleSignupOpt);
+	}
+	,getFacebook:function(){
+		facebook.oauthProcess(_facebookApiConfig.scope,function(){
+			facebook.getLoginUserInfo(function(response){
+				setSnsAccount(response.id,response.email,response.name,'FB');
+			});
+		});
+	}
+	,getNaver:function(){
+		alert('지원예정!!');
 	}
 	,signup:function(){
 		var email  = $('#email').val().trim();
@@ -92,6 +108,7 @@ userJoin = {
 				messageFunction.showDanger(res.msg);
 			}
 		});
+
 		ajaxManager.callAjaxSubmit('saveForm');
 	}
 	,action:function(actBtn){
@@ -102,6 +119,12 @@ userJoin = {
 				break;
 			case 'getGoogle':
 				userJoin.getGoogle();
+				break;
+			case 'getFacebook':
+				userJoin.getFacebook();
+				break;
+			case 'getNaver':
+				userJoin.getNaver();
 				break;
 		}
 	}

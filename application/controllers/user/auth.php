@@ -8,16 +8,18 @@ class Auth extends MY_Controller {
 	}
 
 	public function join(){
-		$this->_styleSheet[] = 'sns/google.css';
 		$this->_headScript[] = 'common/gg_connect.js';
+		$this->_headScript[] = 'common/fb_connect.js';
+		$this->_headScript[] = 'common/fb_function.js';
 		$this->_footScript[] = 'user/join.js';
 
 		$this->load_view('user/auth/join');
 	}
 
 	public function login(){
-		$this->_styleSheet[] = 'sns/google.css';
 		$this->_headScript[] = 'common/gg_connect.js';
+		$this->_headScript[] = 'common/fb_connect.js';
+		$this->_headScript[] = 'common/fb_function.js';
 		$this->_footScript[] = 'user/login.js';
 
 		if($this->_user){
@@ -32,7 +34,7 @@ class Auth extends MY_Controller {
 		$passwdConfirm = $this->input->post('passwordConfirm');
 		$name = $this->input->post('name');
 
-		$userInfo = $this->user->getUser('',$email);
+		$userInfo = $this->user->getUserDetail('',$email);
 		if($userInfo){
 			$this->json_view(array(),500,'가입된 이메일 주소 입니다.');
 		}
@@ -54,15 +56,28 @@ class Auth extends MY_Controller {
 	}
 
 	public function setsns(){
+		error_log('111');
 		$snsType = $this->input->post('snsType');
 		$snsID   = $this->input->post('snsID');
 		$email   = $this->input->post('email');
 		$name    = $this->input->post('name');
 
+		error_log($snsType);
+		error_log($snsID);
+		error_log($email);
+		error_log($name);
+
 		if($snsType && $snsID && $email && $name){
-			$userID = $this->user->saveUser($email,$name,'','AA');
+			$userInfo = $this->user->getUserDetail('',$email);
+			error_log(print_r($userInfo,true));
+			if($userInfo){
+				$userID = $userInfo['userID'];
+			}else{
+				$userID = $this->user->saveUser($email,$name,'','AA');
+			}
 			if($userID){
-				$this->user->setSNSAccount($userID,$snsID,$email,$snsType);
+				$rst = $this->user->setSNSAccount($userID,$snsID,$email,$snsType);
+
 				$rstData = array();
 				$rstData['userID'] = $userID;
 
