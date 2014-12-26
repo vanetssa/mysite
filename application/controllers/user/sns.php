@@ -7,10 +7,7 @@ class Sns extends MY_Controller {
 		$this->load->model('common/user_m','user');
 	}
 
-	public function getGoogleAccount(){
-		$snsID = $this->input->post('snsID');
-		$userID = $this->_user->userID;
-
-		$this->user->
+	public function naver(){
+		
 	}
 }
