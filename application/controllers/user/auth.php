@@ -5,6 +5,7 @@ class Auth extends MY_Controller {
 		parent::__construct();
 
 		$this->load->model('common/user_m','user');
+		$this->load->library('naverapi');
 	}
 
 	public function join(){
@@ -13,7 +14,12 @@ class Auth extends MY_Controller {
 		$this->_headScript[] = 'common/fb_function.js';
 		$this->_footScript[] = 'user/join.js';
 
-		$this->load_view('user/auth/join');
+		$param = 'm=join';
+
+		$data = array();
+		$data['nvurl'] = $this->naverapi->getLoginUrl($param);
+
+		$this->load_view('user/auth/join',$data);
 	}
 
 	public function login(){

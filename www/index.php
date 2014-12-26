@@ -17,7 +17,7 @@
  * NOTE: If you change these, also change the error_reporting() code below
  *
  */
-	define('ENVIRONMENT', 'development');
+	//define('ENVIRONMENT', 'development');
 /*
  *---------------------------------------------------------------
  * ERROR REPORTING
@@ -27,18 +27,28 @@
  * By default development will show errors but testing and live will hide them.
  */
 
+$document_root = getenv('DOCUMENT_ROOT');
+
+if(preg_match('/^\/website/',$document_root)){
+	define('ENVIRONMENT', 'production');
+}else{
+	define('ENVIRONMENT', 'development');
+}
+
 if (defined('ENVIRONMENT'))
 {
 	switch (ENVIRONMENT)
 	{
 		case 'development':
 			error_reporting(E_ALL);			
-			ini_set('display_errors',1);
+			ini_set('display_errors',1);			
+			define('DOMAIN_URL','devphp.vanetssa.com');			
 		break;
 	
 		case 'testing':
 		case 'production':
 			error_reporting(0);
+			define('DOMAIN_URL','vanetssa.com');
 		break;
 
 		default:

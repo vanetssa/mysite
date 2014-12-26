@@ -64,8 +64,9 @@ userJoin = {
 			});
 		});
 	}
-	,getNaver:function(){
-		alert('지원예정!!');
+	,getNaver:function(src){
+		//location.href = src;
+		alert('준비중!!');
 	}
 	,signup:function(){
 		var email  = $('#email').val().trim();
@@ -124,7 +125,7 @@ userJoin = {
 				userJoin.getFacebook();
 				break;
 			case 'getNaver':
-				userJoin.getNaver();
+				userJoin.getNaver(actBtn.data('val'));
 				break;
 		}
 	}

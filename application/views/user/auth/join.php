@@ -31,7 +31,7 @@
       <button type="button" class="btn" data-name="actionBtn" data-act="signup">Sign up</button>
       <button type="button" id="googleSignupBtn"   class="btn btn-danger"  data-name="actionBtn" data-act="getGoogle">google로 가입하기</button>
       <button type="button" id="facebookSignupBtn" class="btn btn-primary" data-name="actionBtn" data-act="getFacebook">facebook으로 가입하기</button>
-      <button type="button" id="naverSignupBtn"    class="btn btn-success" data-name="actionBtn" data-act="getNaver">네이버로 가입하기</button>
+      <button type="button" id="naverSignupBtn"    class="btn btn-success" data-name="actionBtn" data-act="getNaver" data-val="<?php echo $nvurl; ?>">네이버로 가입하기</button>
 
       <?php /* ?>
       <div id="googleSignupBtn" class="googleSignupBtn" data-name="actionBtn" data-act="getGoogle">

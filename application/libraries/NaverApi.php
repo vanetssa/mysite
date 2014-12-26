@@ -7,47 +7,31 @@
  * @version 1.0
  */
 
-class NaverApi extends DataBaseAction{	
+class Naverapi{
 	
-	const COOKIE_NAME   = 'TTNV';
-	const COOKIE_KEY    = '0814401c61a40e2c33b8ae0ff6e50e544a1ea0df';//sha1('@xndjxlqtmspdlqj');
-	const COOKIE_DOMAIN = 'tourtips.com';
-	const COOKIE_STATE  = 'TTNVSTATE';
-	const STATE_KEY     = 'f8d80e2193d10898a008e3a4ed719ccf5ac1ce95';//sha1('@xnxlqspdlqjtmxpdlxm');
-	const TOKEN_KEY     = '6013cbe6307a6c21682419332dcc0c91f8d8aadf';//sha1('@xnxlqxhzmszl');
+	const COOKIE_NAME   = 'VANNV';
+	const COOKIE_KEY    = '172a601b8042e4d685cdba73bdfdbc7d748a9aca';//sha1('vansitespdlqjznzl1!');
+	const COOKIE_DOMAIN = 'vanetssa.com';
+	const COOKIE_STATE  = 'VANNVSTATE';
+	const STATE_KEY     = '5ba5836274f88f6a91eef1b5dba3948bddefdcaa';//sha1('vansitetmxpdlxmzl1!');
+	const TOKEN_KEY     = 'fce2d8f9a886522e7c44cae756a5a8ca1dcaa8ff';//sha1('vansitexhzmszl1!');
 	
-	//const CLIENT_ID        = 'jcmCRhIgOlqCEqgbsozu';
-	//const CLIENT_SECRET    = 'BNc2vCQIiw';
-
-	const CLIENT_ID        = '35FSWJjWjonhoekalxSc';
-	const CLIENT_SECRET    = 'vf63fcjdBR';
+	const CLIENT_ID        = 'jcmCRhIgOlqCEqgbsozu';
+	const CLIENT_SECRET    = 'QqM2StE2P7';
 	
 	const AUTH_LOGIN_URL   = 'https://nid.naver.com/oauth2.0/authorize';
 	const GET_TOKEN_URL    = 'https://nid.naver.com/oauth2.0/token';	
 	const GET_USER_XML_URL = 'https://apis.naver.com/nidlogin/nid/getUserProfile.xml';
+
+	var $_CALLBACK_URL = '';
 	
-	const TOURTIPS_CALLBACK_URL   = 'https://www.tourtips.com/ap/members/nv/';
-	const TOURTIPS_CALLBACK_URL_M = 'https://m.tourtips.com/ap/members/nv/';
-	
-	/**
-	 * 연동할 email의 유효성 체크
-	 * 
-	 * @access public
-	 * @param String $email
-	 * @return Boolean
-	 * */
-	public static function checkEmailValidation($email){
-		if(strpos($email,'@naver.com') === false){
-			return false;
-		}else{
-			$tmp = explode('@',$email);
-			$domain = $tmp[1];
-			if($domain == 'naver.com'){
-				return true;
-			}else{
-				return false;
-			}
-		}
+	function __construct(){
+		$this->_CALLBACK_URL = 'http://'.DOMAIN_URL.'/user/sns/naver';
+
+		$CI =& get_instance();
+		$CI->load->library('encrypt');
+		$this->input = $CI->input;
+		$this->encrypt = $CI->encrypt;
 	}
 	
 	/**
@@ -57,15 +41,14 @@ class NaverApi extends DataBaseAction{
 	 * @param String $param 로그인 및 인증을 위한 페이지 이동시 포함할 데이터
 	 * @return String
 	 * */
-	public static function makeState($param){
+	public function makeState($param){
 		$mt   = microtime();
 		$rand = mt_rand();
 		$head = md5($mt.$rand);
 		
 		$str = $head.';'.$param;
-		$state = base64_encode(MCryptUtil::encrypt($str, self::STATE_KEY));
+		$state = base64_encode($this->encrypt->encode($str, $this::STATE_KEY));
 		$state = preg_replace('/\+/','-',$state);
-		//$state = MCryptUtil::encrypt($str, self::STATE_KEY);
 		return $state;
 	}
 	
@@ -76,10 +59,9 @@ class NaverApi extends DataBaseAction{
 	 * @param String $state
 	 * @return String
 	 * */
-	public static function parseState($state){
+	public function parseState($state){
 		$state = preg_replace('/\-/','+',$state);
-		$state = MCryptUtil::decrypt(base64_decode($state), self::STATE_KEY);
-		//$state = MCryptUtil::decrypt($state, self::STATE_KEY);
+		$state = $this->encrypt->decode(base64_decode($state), $this::STATE_KEY);
 
 		$pos = strpos($state,';');		
 		$str = substr($state,$pos+1);
@@ -108,8 +90,8 @@ class NaverApi extends DataBaseAction{
 	 * @param String $str 암호화할 데이터
 	 * @return String
 	 * */
-	public static function encryptToken($str){
-		$data = base64_encode(MCryptUtil::encrypt($str, self::TOKEN_KEY));
+	public function encryptToken($str){
+		$data = base64_encode($this->encrypt->encode($str, $this::TOKEN_KEY));
 		$data = preg_replace('/\+/','-',$data);
 		return $data;
 	}
@@ -121,9 +103,9 @@ class NaverApi extends DataBaseAction{
 	 * @param String $str 암호 해제할 데이터
 	 * @return String
 	 * */
-	public static function decryptToken($str){
+	public function decryptToken($str){
 		$data = preg_replace('/\-/','+',$str);
-		$data = MCryptUtil::decrypt(base64_decode($data), self::TOKEN_KEY);
+		$data = $this->encrypt->decode(base64_decode($data), $this::TOKEN_KEY);
 		return $data;
 	}
 	
@@ -132,20 +114,18 @@ class NaverApi extends DataBaseAction{
 	 * 
 	 * @access public
 	 * @param String $param 인증후 돌아올 url에 첨부할 데이터 ex)rd=www.tourtips.com&step=join
-	 * @param Boolean $isMobile 모바일 여부	 
 	 * @return String
 	 * */
-	public static function getLoginUrl($param=null,$isMobile=false){
-		if(empty($param)){ $param = 'rd=';}		
+	public function getLoginUrl($param=null){
+		if(empty($param)){ $param = 'rd=';}
 		
-		$state = self::makeState($param);
+		$state = $this->makeState($param);
 				
-		self::bakeStateCookie($state);
-				
-		$callBackUrl = self::TOURTIPS_CALLBACK_URL;
-		if(!empty($isMobile)){ $callBackUrl = self::TOURTIPS_CALLBACK_URL_M; }
-		$callUrl = self::AUTH_LOGIN_URL.'?client_id='.self::CLIENT_ID.'&state='.$state.'&response_type=code&redirect_uri='.$callBackUrl;
-		
+		$this->bakeStateCookie($state);
+
+		$callBackUrl = $this->_CALLBACK_URL;
+		$callUrl = $this::AUTH_LOGIN_URL.'?client_id='.$this::CLIENT_ID.'&state='.$state.'&response_type=code&redirect_uri='.$callBackUrl;
+
 		return $callUrl;
 	}
 	
@@ -156,8 +136,8 @@ class NaverApi extends DataBaseAction{
 	 * @param String $param 인증후 돌아올 url에 첨부할 데이터 ex)rd=www.tourtips.com&step=join
 	 * @param Boolean $isMobile 모바일 여부
 	 * */
-	public static function getAuthCode($param=null,$isMobile=false){
-		$loginUrl = self::getLoginUrl($param,$isMobile);
+	public function getAuthCode($param=null,$isMobile=false){
+		$loginUrl = $this->getLoginUrl($param,$isMobile);
 		header('Location: ' . $loginUrl);
 		exit;
 	}
@@ -167,8 +147,17 @@ class NaverApi extends DataBaseAction{
 	 * 
 	 * @access public
 	 * */
-	public static function bakeStateCookie($state){
-		Cookie::bakeCookie(self::COOKIE_STATE, $state, self::COOKIE_DOMAIN);		
+	public function bakeStateCookie($state){
+		$cookie = array(
+			'name'   => $this::COOKIE_STATE,
+			'value'  => $state,
+			'expire' => 0,
+			'domain' => LOGIN_COOKIE_DOMAIN,
+			'path'   => '/',
+			'prefix' => '',
+			'secure' => FALSE
+		);
+		$this->input->set_cookie($cookie);
 	}
 	
 	/**
@@ -177,8 +166,8 @@ class NaverApi extends DataBaseAction{
 	 * @access public
 	 * @return String
 	 * */
-	public static function getStateCookie(){
-		return Cookie::getCookie(self::COOKIE_STATE);
+	public function getStateCookie(){
+		return $this->input->cookie($this::COOKIE_STATE);
 	}
 	
 	/**
@@ -186,8 +175,17 @@ class NaverApi extends DataBaseAction{
 	 * 
 	 * @access public
 	 * */
-	public static function clearStateCookie(){
-		Cookie::bakeCookie(self::COOKIE_STATE, '', self::COOKIE_DOMAIN);
+	public function clearStateCookie(){
+		$cookie = array(
+			'name'   => $this::COOKIE_STATE,
+			'value'  => '',
+			'expire' => 0,
+			'domain' => LOGIN_COOKIE_DOMAIN,
+			'path'   => '/',
+			'prefix' => '',
+			'secure' => FALSE
+		);
+		$this->input->set_cookie($cookie);
 	}
 	
 	/**
@@ -198,8 +196,8 @@ class NaverApi extends DataBaseAction{
 	 * @param String $state 로그인(인증) url생성시 만든 state값
 	 * @return Array 
 	 * */
-	public static function getToken($code,$state){
-		$callUrl = self::GET_TOKEN_URL.'?grant_type=authorization_code&client_id='.self::CLIENT_ID.'&client_secret='.self::CLIENT_SECRET.'&code='.$code.'&state='.$state;
+	public function getToken($code,$state){
+		$callUrl = $this::GET_TOKEN_URL.'?grant_type=authorization_code&client_id='.$this::CLIENT_ID.'&client_secret='.$this::CLIENT_SECRET.'&code='.$code.'&state='.$state;
 		
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, $callUrl);
@@ -243,21 +241,26 @@ class NaverApi extends DataBaseAction{
 	 * @param String $type 토큰 타입
 	 * @return Array
 	 * */
-	public static function getUserInfo($token,$type){
-		$calUrl = self::GET_USER_XML_URL;
+	public function getUserInfo($token,$type){
+		$calUrl = $this::GET_USER_XML_URL;
 		
 		$ch = curl_init();
-			
+
 		curl_setopt($ch, CURLOPT_URL, $calUrl);
 		curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: '.$type.' '.$token));
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 		$output = curl_exec($ch);
 		curl_close($ch);
-		
+
+		$this->load->library('xmlparser',$output);
+
+		$obj = $this->xmlparser->array;
+
+		/*
 		$xmlObj = new XMLObjectParser('UTF-8', $output);
 		$obj = $xmlObj->getObject();
 		
-		$rdata = array();		
+		$rdata = array();
 		$rdata['code']    = $obj->DATA->RESULT->RESULTCODE;
 		$rdata['message'] = $obj->DATA->RESULT->MESSAGE;
 		
@@ -282,6 +285,7 @@ class NaverApi extends DataBaseAction{
 		}
 
 		return $rdata;
+		*/
 	}
 	
 	/**
@@ -293,10 +297,10 @@ class NaverApi extends DataBaseAction{
 	 * @param String $type 토큰 타입
 	 * @param Integer $expire 토큰 유효시간(초 time()+expires_in)
 	 * */
-	public static function saveToCookie($token,$r_token,$type,$expire){
+	public function saveToCookie($token,$r_token,$type,$expire){
 		$str = $token.'|'.$r_token.'|'.$type.'|'.$expire;
-		$info = base64_encode(MCryptUtil::encrypt($str, self::COOKIE_KEY));
-		Cookie::bakeCookie(self::COOKIE_NAME, $info, self::COOKIE_DOMAIN);
+		$info = base64_encode($this->encrypt->encode($str, $this::COOKIE_KEY));
+		Cookie::bakeCookie($this::COOKIE_NAME, $info, $this::COOKIE_DOMAIN);
 	}
 	
 	/**
@@ -305,9 +309,9 @@ class NaverApi extends DataBaseAction{
 	 * @access public
 	 * @return Array;
 	 * */
-	public static function loadFromCookie(){
-		$cookie_var = Cookie::getCookie(self::COOKIE_NAME);
-		$data = MCryptUtil::decrypt(base64_decode($cookie_var), self::COOKIE_KEY);
+	public function loadFromCookie(){
+		$cookie_var = $this->input->cookie($this::COOKIE_NAME);
+		$data = $this->encrypt->decode(base64_decode($cookie_var), $this::COOKIE_KEY);
 		
 		$rdata = array();
 		$rdata['rst']     = false;
@@ -337,7 +341,7 @@ class NaverApi extends DataBaseAction{
 	 * @access public
 	 * @param String $redirect 로그인 완료후 이동할 url
 	 * */
-	public static function doLogin($redirect=''){
+	public function doLogin($redirect=''){
 		$code  = Request::getGet('code');
 		$state = Request::getGet('state');
 		
@@ -363,4 +367,3 @@ class NaverApi extends DataBaseAction{
 		}
 	}	
 }
-?>
