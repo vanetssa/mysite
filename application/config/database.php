@@ -50,7 +50,7 @@ $active_record = FALSE;
 
 if(ENVIRONMENT == 'production') {
 	// master
-	$db['DBM']['hostname'] = '175.126.100.53';
+	$db['DBM']['hostname'] = 'localhost';	
 	$db['DBM']['port'] = '3306';
 	$db['DBM']['username'] = 'van';
 	$db['DBM']['password'] = 'ejswus82';
@@ -68,7 +68,7 @@ if(ENVIRONMENT == 'production') {
 	$db['DBM']['stricton'] = FALSE;
 
 	// slave
-	$db['DBS']['hostname'] = '175.126.100.53';
+	$db['DBS']['hostname'] = 'localhost';
 	$db['DBS']['port'] = '3306';
 	$db['DBS']['username'] = 'van';
 	$db['DBS']['password'] = 'ejswus82';
