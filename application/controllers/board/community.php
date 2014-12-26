@@ -54,6 +54,10 @@ class Community extends MY_Controller {
 	}
 
 	public function write($boardID){
+		if(empty($this->_user)){
+			$this->displayScript('alert("로그인이 필요함");history.back(-1);');
+		}
+
 		$this->_footScript[] = 'module/smart_editor/js/HuskyEZCreator.js';
 		$this->_footScript[] = 'uploader/swfupload.js';
 		$this->_footScript[] = 'uploader/swfupload.plugin.js';

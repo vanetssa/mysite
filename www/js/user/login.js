@@ -15,8 +15,10 @@ function signinCallback(authResult){
 }
 
 function getEmailCallback(obj){	
-	if(obj['email']){		
+	if(obj['id']){		
 		doSnsLogin(obj['id'],'GG');
+	}else{
+		messageFunction.showDanger('가입된 SNS 계정이 아닙니다.');
 	}
 }
 
@@ -53,8 +55,17 @@ userLogin = {
 		gapi.signin.render('googleSignupBtn',googleSignupOpt);
 	}
 	,loginFacebook:function(){
-		facebook.oauthProcess(_facebookApiConfig.scope,function(res){
-			doSnsLogin(res.authResponse.userID,'FB');
+		facebook.loginProcess(_facebookApiConfig.scope,function(res){			
+			var facebookUserID = '';
+			try{
+				facebookUserID = res.authResponse.userID;
+			}catch(err){}
+			
+			if(facebookUserID){
+				doSnsLogin(facebookUserID,'FB');
+			}else{
+				messageFunction.showDanger('가입된 SNS 계정이 아닙니다.');
+			}
 		});
 	}
 	,loginNaver:function(){

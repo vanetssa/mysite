@@ -150,6 +150,25 @@ facebook.oauthProcess = function(scope,callback){
 }
 
 /**
+ * 페이스북 로그인 처리
+ */
+facebook.loginProcess = function(scope,callback){
+	FB.getLoginStatus(function(response){
+		if(response.status == 'connected'){
+			if(typeof callback == 'function'){
+	        	callback(response);
+	        }
+		}else{
+			facebook.doLogin(scope,function(res){
+				if(typeof callback == 'function'){
+        			callback(response);
+        		}
+			});
+		}
+	});
+}
+
+/**
  * 로그인한 사용자 정보 가져오기
  */
 facebook.getLoginUserInfo = function(callback){

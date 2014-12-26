@@ -1,9 +1,8 @@
 <?php
 
 /**
- * 네이버 API 클래스
- * @author tourtipsvan@tourtips.com
- * @date 2014-06-10
+ * 네이버 API 클래스 
+ * @date 2014-12-26
  * @version 1.0
  */
 

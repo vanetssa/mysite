@@ -62,16 +62,10 @@ class Auth extends MY_Controller {
 	}
 
 	public function setsns(){
-		error_log('111');
 		$snsType = $this->input->post('snsType');
 		$snsID   = $this->input->post('snsID');
 		$email   = $this->input->post('email');
 		$name    = $this->input->post('name');
-
-		error_log($snsType);
-		error_log($snsID);
-		error_log($email);
-		error_log($name);
 
 		if($snsType && $snsID && $email && $name){
 			$userInfo = $this->user->getUserDetail('',$email);
@@ -102,6 +96,11 @@ class Auth extends MY_Controller {
 
 		if($snsID && $snsType){
 			$userInfo = $this->user->getUserBySNS($snsType,$snsID);
+			if(empty($userInfo)){
+				$this->json_view(array(),500,'가입된 SNS 계정이 아닙니다.');
+			}
+		}else if($snsType){
+			$this->json_view(array(),500,'가입된 SNS 계정이 아닙니다.');
 		}else{
 			if(empty($email)){				
 				$this->json_view(array(),500,'이메일 주소를 입력 하세요.');
