@@ -65,8 +65,8 @@ userJoin = {
 		});
 	}
 	,getNaver:function(src){
-		//location.href = src;
-		alert('준비중!!');
+		location.href = src;
+		//alert('준비중!!');
 	}
 	,signup:function(){
 		var email  = $('#email').val().trim();

@@ -15,8 +15,8 @@ class Naverapi{
 	const STATE_KEY     = '5ba5836274f88f6a91eef1b5dba3948bddefdcaa';//sha1('vansitetmxpdlxmzl1!');
 	const TOKEN_KEY     = 'fce2d8f9a886522e7c44cae756a5a8ca1dcaa8ff';//sha1('vansitexhzmszl1!');
 	
-	const CLIENT_ID        = 'jcmCRhIgOlqCEqgbsozu';
-	const CLIENT_SECRET    = 'QqM2StE2P7';
+	const CLIENT_ID        = 'hKVdhVroVAHMdXjCTNMh';
+	const CLIENT_SECRET    = 'GAoDjdDA4e';
 	
 	const AUTH_LOGIN_URL   = 'https://nid.naver.com/oauth2.0/authorize';
 	const GET_TOKEN_URL    = 'https://nid.naver.com/oauth2.0/token';	
@@ -29,8 +29,11 @@ class Naverapi{
 
 		$CI =& get_instance();
 		$CI->load->library('encrypt');
+		$CI->load->library('xmlparser');
+
 		$this->input = $CI->input;
 		$this->encrypt = $CI->encrypt;
+		$this->xmlparser = $CI->xmlparser;
 	}
 	
 	/**
@@ -251,40 +254,29 @@ class Naverapi{
 		$output = curl_exec($ch);
 		curl_close($ch);
 
-		$this->load->library('xmlparser',$output);
+		$this->xmlparser->init($output);
 
 		$obj = $this->xmlparser->array;
-
-		/*
-		$xmlObj = new XMLObjectParser('UTF-8', $output);
-		$obj = $xmlObj->getObject();
 		
 		$rdata = array();
-		$rdata['code']    = $obj->DATA->RESULT->RESULTCODE;
-		$rdata['message'] = $obj->DATA->RESULT->MESSAGE;
+		$rdata['code']    = $obj['data']['result']['resultcode'];
+		$rdata['message'] = $obj['data']['result']['message'];
 		
 		if($rdata['code'] == '00'){
 			$rdata['rst']           = true;
-			$rdata['email']         = $obj->DATA->RESPONSE->EMAIL;
-			$rdata['nickname']      = $obj->DATA->RESPONSE->NICKNAME;
-			$rdata['enc_id']        = $obj->DATA->RESPONSE->ENC_ID;
-			$rdata['profile_image'] = str_replace('?type=s80','',$obj->DATA->RESPONSE->PROFILE_IMAGE);
-			$rdata['age']           = $obj->DATA->RESPONSE->AGE;
-			$rdata['birthday']      = $obj->DATA->RESPONSE->BIRTHDAY;
-			$rdata['gender']        = $obj->DATA->RESPONSE->GENDER;
+			$rdata['email']         = $obj['data']['response']['email'];
+			$rdata['nickname']      = $obj['data']['response']['nickname'];
+			$rdata['enc_id']        = $obj['data']['response']['enc_id'];
+			$rdata['profile_image'] = str_replace('?type=s80','',$obj['data']['response']['profile_image']);
 		}else{
 			$rdata['rst']           = false;
 			$rdata['email']         = '';
 			$rdata['nickname']      = '';
 			$rdata['enc_id']        = '';
-			$rdata['profile_image'] = '';
-			$rdata['age']           = '';
-			$rdata['birthday']      = '';
-			$rdata['gender']        = '';
+			$rdata['profile_image'] = '';			
 		}
 
 		return $rdata;
-		*/
 	}
 	
 	/**

@@ -32,7 +32,8 @@ $document_root = getenv('DOCUMENT_ROOT');
 if(preg_match('/^\/website/',$document_root)){
 	define('ENVIRONMENT', 'production');
 }else{
-	define('ENVIRONMENT', 'development');
+	//define('ENVIRONMENT', 'development');
+	define('ENVIRONMENT', 'production');
 }
 
 if (defined('ENVIRONMENT'))

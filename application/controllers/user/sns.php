@@ -15,6 +15,7 @@ class Sns extends MY_Controller {
 		if(!empty($code) && !empty($state)){
 			$cookie_state = $this->naverapi->getStateCookie();
 			$this->naverapi->clearStateCookie();
+
 			if($state == $cookie_state){
 				$tokenData = $this->naverapi->getToken($code,$state);
 
@@ -24,7 +25,8 @@ class Sns extends MY_Controller {
 				$tk = $this->naverapi->encryptToken($access_token);
 				$tt = $token_type;
 
-				$decrypt_token = $this->naverapi->decryptToken($tk);					
+				$decrypt_token = $this->naverapi->decryptToken($tk);
+
 				$userInfo = $this->naverapi->getUserInfo($decrypt_token,$tt);
 
 				$param = $this->naverapi->parseState($cookie_state);
@@ -32,7 +34,13 @@ class Sns extends MY_Controller {
 				$rd   = !empty($param['rd'])?urlencode($param['rd']):'';
 				$mode = !empty($param['m'])?$param['m']:'';
 
-				error_log(print_r($userInfo,true));
+				if($mode == 'join'){
+					$param = array();
+					$param['rd'] = $rd;
+					$param['tk'] = $access_token;
+					$param['tt'] = $token_type;
+					$url = '/user/auth/join?'
+				}
 			}
 		}
 

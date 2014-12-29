@@ -1,7 +1,8 @@
 <?
   /** 
    * Convert an xml file or string to an associative array (including the tag attributes): 
-   * $domObj = new xmlPaRser($xml); 
+   * $domObj = new xmlPaRser(); 
+   * $domObj->init($xml);
    * $elemVal = $domObj->array['element'] 
    * Or:  $domArr=$domObj->array;  $elemVal = $domArr['element']. 
    * 
@@ -14,9 +15,10 @@
     public  $parse_error = false; 
     private $parser; 
     private $pointer; 
+    
+    public function __construct() {}
 
-    /** Constructor: $domObj = new xmlPaRser($xml); */ 
-    public function __construct($xml) { 
+    public function init($xml){
       $this->pointer =& $this->array; 
       $this->parser = xml_parser_create("UTF-8"); 
       xml_set_object($this->parser, $this); 
