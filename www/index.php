@@ -31,9 +31,10 @@ $document_root = getenv('DOCUMENT_ROOT');
 
 if(preg_match('/^\/website/',$document_root)){
 	define('ENVIRONMENT', 'production');
+	define('SERVICEPATH', '/website/php');
 }else{
-	//define('ENVIRONMENT', 'development');
-	define('ENVIRONMENT', 'production');
+	define('ENVIRONMENT', 'development');
+	define('SERVICEPATH', '/home/van/work/php');
 }
 
 if (defined('ENVIRONMENT'))
@@ -42,14 +43,12 @@ if (defined('ENVIRONMENT'))
 	{
 		case 'development':
 			error_reporting(E_ALL);			
-			ini_set('display_errors',1);			
-			define('DOMAIN_URL','devphp.vanetssa.com');			
+			ini_set('display_errors',1);
 		break;
 	
 		case 'testing':
 		case 'production':
 			error_reporting(0);
-			define('DOMAIN_URL','vanetssa.com');
 		break;
 
 		default:
@@ -67,7 +66,7 @@ if (defined('ENVIRONMENT'))
  * as this file.
  *
  */
-	$system_path = '../system';
+	$system_path = SERVICEPATH.'/system';
 
 /*
  *---------------------------------------------------------------
@@ -83,7 +82,7 @@ if (defined('ENVIRONMENT'))
  * NO TRAILING SLASH!
  *
  */
-	$application_folder = '../application';
+	$application_folder = SERVICEPATH.'/application';
 
 /*
  * --------------------------------------------------------------------
@@ -186,10 +185,9 @@ if (defined('ENVIRONMENT'))
 	// Name of the "system folder"
 	define('SYSDIR', trim(strrchr(trim(BASEPATH, '/'), '/'), '/'));
 
-
 	// The path to the "application" folder
 	if (is_dir($application_folder))
-	{
+	{		
 		define('APPPATH', $application_folder.'/');
 	}
 	else

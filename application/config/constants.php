@@ -42,5 +42,11 @@ define('LOGIN_COOKIE_NAME',   'van');
 define('LOGIN_COOKIE_EXPIRE', 0);
 define('LOGIN_COOKIE_DOMAIN', 'vanetssa.com');
 
+if(ENVIRONMENT == 'production'){
+	define('DOMAIN_URL', 'vanetssa.com');
+}else{
+	define('DOMAIN_URL', 'devphp.vanetssa.com');
+}
+
 /* End of file constants.php */
 /* Location: ./application/config/constants.php */

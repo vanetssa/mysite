@@ -16,16 +16,17 @@
     private $parser; 
     private $pointer; 
     
-    public function __construct() {}
-
-    public function init($xml){
+    public function __construct() {
       $this->pointer =& $this->array; 
       $this->parser = xml_parser_create("UTF-8"); 
       xml_set_object($this->parser, $this); 
       xml_parser_set_option($this->parser, XML_OPTION_CASE_FOLDING, false); 
       xml_set_element_handler($this->parser, "tag_open", "tag_close"); 
-      xml_set_character_data_handler($this->parser, "cdata"); 
-      $this->parse_error = xml_parse($this->parser, ltrim($xml))? false : true; 
+      xml_set_character_data_handler($this->parser, "cdata");
+    }
+
+    public function init($xml){
+      $this->parse_error = xml_parse($this->parser, ltrim($xml))? false : true;
     }
 
     /** Free the parser. */ 

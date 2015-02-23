@@ -14,10 +14,26 @@ class Auth extends MY_Controller {
 		$this->_headScript[] = 'common/fb_function.js';
 		$this->_footScript[] = 'user/join.js';
 
-		$param = 'm=join';
-
 		$data = array();
-		$data['nvurl'] = $this->naverapi->getLoginUrl($param);
+		$data['snsType'] = '';
+		$data['snsID']   = '';
+		$data['email']   = '';
+		$data['name']    = '';
+		$data['nvurl']   = $this->naverapi->getLoginUrl('m=join');
+
+		$accessToken = $this->input->get('tk');
+		$tokenType   = $this->input->get('tt');
+
+		if($accessToken){
+			$decryptToken = $this->naverapi->decryptToken($accessToken);
+			$userInfo = $this->naverapi->getUserInfo($decryptToken,$tokenType);
+			if($userInfo['rst']){
+				$data['snsType'] = $this->user->SNS_TYPE_NAVER;
+				$data['snsID']   = $userInfo['enc_id'];
+				$data['email']   = $userInfo['email'];
+				$data['name']    = $userInfo['nickname'];
+			}
+		}
 
 		$this->load_view('user/auth/join',$data);
 	}

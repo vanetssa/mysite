@@ -27,8 +27,6 @@ class Sns extends MY_Controller {
 
 				$decrypt_token = $this->naverapi->decryptToken($tk);
 
-				$userInfo = $this->naverapi->getUserInfo($decrypt_token,$tt);
-
 				$param = $this->naverapi->parseState($cookie_state);
 
 				$rd   = !empty($param['rd'])?urlencode($param['rd']):'';
@@ -39,7 +37,7 @@ class Sns extends MY_Controller {
 					$param['rd'] = $rd;
 					$param['tk'] = $access_token;
 					$param['tt'] = $token_type;
-					$url = '/user/auth/join?'
+					$url = '/user/auth/join?'.http_build_query($param);
 				}
 			}
 		}

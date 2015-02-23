@@ -50,7 +50,7 @@
 
 			$this->load->model('content/board_m','board');
 			$this->load->model('common/user_m','user');
-
+			
 			$boardList = $this->board->getBoardFromFile();
 			$boardInfo = array();
 			$community = array();
@@ -126,7 +126,7 @@
 
 			@header('Content-type: '.$ctype);
 			@header('Content-Length: '.$file_size);
-			echo file_get_contents($imagePath) . "\r\n";
+			echo file_get_contents($imagePath) . $this::EOL;
 			exit;
 		}
 
