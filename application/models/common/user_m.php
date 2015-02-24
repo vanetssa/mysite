@@ -2,8 +2,9 @@
 
 class User_m extends MY_Model {
 
-	var $USER_STATUS = array();
-	var $CODE_DATA   = array();
+	var $USER_STATUS   = array();
+	var $SNS_TYPE_INFO = array();
+	var $CODE_DATA     = array();
 
 	function __construct() {
 		parent::__construct();
@@ -12,7 +13,12 @@ class User_m extends MY_Model {
 		$this->USER_STATUS[] = array(USER_STATUS_BLOCK,'차단');
 		$this->USER_STATUS[] = array(USER_STATUS_DELETE,'탈퇴');
 
-		$this->CODE_DATA['USER_STATUS'] = $this->USER_STATUS;		
+		$this->SNS_TYPE_INFO[] = array(SNS_TYPE_FACEBOOK,'페이스북');
+		$this->SNS_TYPE_INFO[] = array(SNS_TYPE_GOOGLE,'구글');
+		$this->SNS_TYPE_INFO[] = array(SNS_TYPE_NAVER,'네이버');
+
+		$this->CODE_DATA['USER_STATUS']   = $this->USER_STATUS;
+		$this->CODE_DATA['SNS_TYPE_INFO'] = $this->SNS_TYPE_INFO;
 
 		$this->load->library('encrypt');
 		$this->load->helper('file');
@@ -173,8 +179,31 @@ class User_m extends MY_Model {
 		$data['createDate']  = !empty($userInfo->CreateDate)?substr($userInfo->CreateDate,0,16):'';
 		$data['modifyDate']  = !empty($userInfo->ModifyDate)?substr($userInfo->ModifyDate,0,16):'';
 		$data['statusValue'] = $this->getCodeValue('USER_STATUS',$data['status']);
+		$data['snsInfo']     = $this->getUserSNSUseInfo($userInfo->ID);
 
 		return $data;
+	}
+
+	/**
+	 * 회원의 SNS연동정보 가져오기
+	 * 
+	 * @access public
+	 * @param int $userID 사용자ID
+	 * @return array
+	 */
+	public function getUserSNSUseInfo($userID){
+		$snsInfo = array();
+		foreach($this->SNS_TYPE_INFO as $data){
+			$code = $data[0];
+			$name = $data[1];
+
+			$info = $this->getSNSAccount($userID,$code);
+
+			$snsInfo[$code]['code'] = $code;
+			$snsInfo[$code]['name'] = $name;
+			$snsInfo[$code]['info'] = $info;
+		}
+		return $snsInfo;
 	}
 
 	/**

@@ -43,4 +43,8 @@ class Sns extends MY_Controller {
 
 		$this->movePage('/','잘못된 접근 입니다');
 	}
+
+	public function google(){
+		
+	}
 }

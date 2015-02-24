@@ -9,9 +9,11 @@ class Auth extends MY_Controller {
 	}
 
 	public function join(){
-		$this->_headScript[] = 'common/gg_connect.js';
-		$this->_headScript[] = 'common/fb_connect.js';
+		$this->_headScript[] = FACEBOOK_API;
+		$this->_headScript[] = GOOGLE_PLUS_API;
+		$this->_headScript[] = GOOGLE_PLUS_CLIENT_API;
 		$this->_headScript[] = 'common/fb_function.js';
+		$this->_headScript[] = 'common/gg_function.js';
 		$this->_footScript[] = 'user/join.js';
 
 		$data = array();
@@ -39,9 +41,11 @@ class Auth extends MY_Controller {
 	}
 
 	public function login(){
-		$this->_headScript[] = 'common/gg_connect.js';
-		$this->_headScript[] = 'common/fb_connect.js';
+		$this->_headScript[] = FACEBOOK_API;
+		$this->_headScript[] = GOOGLE_PLUS_API;
+		$this->_headScript[] = GOOGLE_PLUS_CLIENT_API;
 		$this->_headScript[] = 'common/fb_function.js';
+		$this->_headScript[] = 'common/gg_function.js';
 		$this->_footScript[] = 'user/login.js';
 
 		if($this->_user){

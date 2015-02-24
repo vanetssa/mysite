@@ -1,21 +1,7 @@
 var userJoin = {};
-var googleSignupOpt = objectCopy(_googleApiConfig);
-googleSignupOpt.callback = 'signinCallback';
 
-function signinCallback(authResult){
-	gapi.auth.setToken(authResult);
-	if(authResult['access_token']){
-		gapi.client.load('oauth2', 'v2', function() {
-        	var request = gapi.client.oauth2.userinfo.get();
-        	request.execute(getEmailCallback);
-      	});
-	}else{
-
-	}
-}
-
-function getEmailCallback(obj){
-	if(obj['email']){		
+function doGoogleProcess(obj){
+	if(obj['email']){
 		setSnsAccount(obj['id'],obj['email'],obj['name'],'GG');
 	}
 }
@@ -47,19 +33,19 @@ function setSnsAccount(snsID,snsEmail,snsName,snsType){
 }
 
 userJoin = {
-	init:function(){		
+	init:function(){
 		$('#siteBody').on('click','button[data-name=actionBtn],a[data-name=actionBtn]',function(){
 			userJoin.action($(this));
 		});
 
-		facebook.init(_facebookApiConfig.appid,{});
+		__facebook.init(_facebookApiConfig.appid,{});
 	}
 	,getGoogle:function(){
-		gapi.signin.render('googleSignupBtn',googleSignupOpt);
+		__google.getOauth();
 	}
 	,getFacebook:function(){
-		facebook.oauthProcess(_facebookApiConfig.scope,function(){
-			facebook.getLoginUserInfo(function(response){
+		__facebook.oauthProcess(_facebookApiConfig.scope,function(){
+			__facebook.getLoginUserInfo(function(response){
 				setSnsAccount(response.id,response.email,response.name,'FB');
 			});
 		});

@@ -1,4 +1,4 @@
-var facebook = facebook || {};
+var __facebook = __facebook || {};
 
 /**
  *	페이스북 API초기설정
@@ -7,7 +7,7 @@ var facebook = facebook || {};
  *	@param Integer appid 앱의 고유 ID
  *	@param Array option 추가로 설정할 option
  * */
-facebook.init = function(appid,option){
+__facebook.init = function(appid,option){
 	config = {appId:appid,cookie:true,status:false,xfbml:false,version:'v2.1'};
 	config = $.extend(config,option);
 	FB.init(config);
@@ -21,7 +21,7 @@ facebook.init = function(appid,option){
  *	@param String scope 앱승인시 사용자로 부터 받을 권한(publish_stream,read_friendlists...)
  *	@param Function callback 로그인 창을 띄운뒤 일어나는 액션을 받아서 실행 시킬 함수 
  * */
-facebook.doLogin = function(scope,callback){	
+__facebook.doLogin = function(scope,callback){	
 	FB.login(
 		function(response) {
 			callback(response);
@@ -32,7 +32,7 @@ facebook.doLogin = function(scope,callback){
 /**
  *	페이스북 로그인 url을 가지고옴 
  * */
-facebook.getLoginUrl = function(appid,scope,redirect) {	
+__facebook.getLoginUrl = function(appid,scope,redirect) {	
 	var oauth_url = 'https://www.facebook.com/dialog/oauth/';
 	oauth_url += '?client_id='+appid;
 	oauth_url += '&scope='+scope;
@@ -47,7 +47,7 @@ facebook.getLoginUrl = function(appid,scope,redirect) {
  * 	}
  * 
  * */
-facebook.getPermission = function(scope,callback){
+__facebook.getPermission = function(scope,callback){
 	var permission = {
 		method:'permissions.request',
 		perms:scope,
@@ -79,13 +79,13 @@ facebook.getPermission = function(scope,callback){
  *  @param Function callback 로그인 창을 띄운뒤 일어나는 액션을 받아서 실행 시킬 함수
  *  
  * */
-facebook.login = {
+__facebook.login = {
 	popup:function(btnId,scope,callback){
-		$('#'+btnId).click(function(){ facebook.doLogin(scope,callback); });		
+		$('#'+btnId).click(function(){ __facebook.doLogin(scope,callback); });		
 	}
 	,page:function(btnId,appid,scope,redirect,callback){
 		$('#'+btnId).click(function(){
-			loginUrl = facebook.getLoginUrl(appid,scope,redirect);
+			loginUrl = __facebook.getLoginUrl(appid,scope,redirect);
 			location.href = loginUrl;
 		});
 		FB.getLoginStatus(function(response) {			
@@ -114,7 +114,7 @@ facebook.login = {
  * 
  * 	@param Function callback 로그인 창을 띄운뒤 일어나는 액션을 받아서 실행 시킬 함수
  * */
-facebook.getOauth = function(callback){
+__facebook.getOauth = function(callback){
 	FB.getLoginStatus(function(response){
 		callback(response);
 	});
@@ -123,14 +123,14 @@ facebook.getOauth = function(callback){
 /**
  * 페이스북 권한얻기 처리
  */
-facebook.oauthProcess = function(scope,callback){
+__facebook.oauthProcess = function(scope,callback){
 	FB.getLoginStatus(function(response){
 		if(response.status == 'connected'){
 			if(typeof callback == 'function'){
 	        	callback(response);
 	        }
 		}else if(response.status == 'not_authorized'){
-			facebook.getPermission(scope,function(res){
+			__facebook.getPermission(scope,function(res){
 				if(res.status == 'connected'){
 					if(typeof callback == 'function'){
 	        			callback(response);
@@ -138,7 +138,7 @@ facebook.oauthProcess = function(scope,callback){
 				}
 			});
 		}else{
-			facebook.doLogin(scope,function(res){
+			__facebook.doLogin(scope,function(res){
 				if(res.status == 'connected'){
 					if(typeof callback == 'function'){
 	        			callback(response);
@@ -152,14 +152,14 @@ facebook.oauthProcess = function(scope,callback){
 /**
  * 페이스북 로그인 처리
  */
-facebook.loginProcess = function(scope,callback){
+__facebook.loginProcess = function(scope,callback){
 	FB.getLoginStatus(function(response){
 		if(response.status == 'connected'){
 			if(typeof callback == 'function'){
 	        	callback(response);
 	        }
 		}else{
-			facebook.doLogin(scope,function(res){
+			__facebook.doLogin(scope,function(res){
 				if(typeof callback == 'function'){
         			callback(response);
         		}
@@ -171,7 +171,7 @@ facebook.loginProcess = function(scope,callback){
 /**
  * 로그인한 사용자 정보 가져오기
  */
-facebook.getLoginUserInfo = function(callback){
+__facebook.getLoginUserInfo = function(callback){
 	FB.api('/me',function(response){		
 	    if(typeof callback == 'function'){
 			callback(response);
@@ -185,7 +185,7 @@ facebook.getLoginUserInfo = function(callback){
  *  @param String url 공유시킬 url
  * 	@param Function callback 로그인 창을 띄운뒤 일어나는 액션을 받아서 실행 시킬 함수
  * */
-facebook.openShareDialog = function(url,callback){
+__facebook.openShareDialog = function(url,callback){
 	var share = {
 		method: 'stream.share',
       	u:encodeURIComponent(url),
@@ -210,7 +210,7 @@ facebook.openShareDialog = function(url,callback){
  *  @param Array option 추가로 설정할 데이터
  *  @param Function callback 로그인 창을 띄운뒤 일어나는 액션을 받아서 실행 시킬 함수
  * */
-facebook.openFeedDialog = function(link,name,desc,pic,option,callback){
+__facebook.openFeedDialog = function(link,name,desc,pic,option,callback){
 	if(!pic){ pic = 'http://img.tourtips.com/images/fblogos/fb_tourtips_logo_200_200.jpg'; }
 	var feed = {
 		method: 'feed',
@@ -238,7 +238,7 @@ facebook.openFeedDialog = function(link,name,desc,pic,option,callback){
  *  @param String desc 담벼락 박스에 남게 되는 설명
  *  @param String pic 담벼락 박스에 남게 되는 이미지의 url
  * */
-facebook.openSharePopUp= function(link,name,desc,pic){
+__facebook.openSharePopUp= function(link,name,desc,pic){
 	link = encodeURIComponent(link);
 	name = encodeURIComponent(name);
 	desc = encodeURIComponent(desc);
@@ -263,7 +263,7 @@ facebook.openSharePopUp= function(link,name,desc,pic){
  * 	@param String pic 담벼락 박스에 남게 되는 이미지의 url
  * 	@param Function callback 로그인 창을 띄운뒤 일어나는 액션을 받아서 실행 시킬 함수
  * */
-facebook.putFeedMe = function(link,name,message,desc,pic,callback){
+__facebook.putFeedMe = function(link,name,message,desc,pic,callback){
 	FB.getLoginStatus(function(response) {
 		if(response.status == 'connected'){			
 			if(!pic){ pic = 'http://img.tourtips.com/images/fblogos/fb_tourtips_logo_200_200.jpg'; }
@@ -291,7 +291,7 @@ facebook.putFeedMe = function(link,name,message,desc,pic,callback){
  * 	@param Integer uid 페이스북에서 사용되는 사용자의 고유 ID
  * 	@param Fcuntion callback 친구목록을 불러온뒤 실행 할 함수
  * */
-facebook.getFriend = function(uid,callback){
+__facebook.getFriend = function(uid,callback){
 	query = 'SELECT uid, name, pic FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE uid1='+uid+')';
 	fql = {method:'fql.query',query:query};
 	FB.api(fql,function(res){
@@ -306,7 +306,7 @@ facebook.getFriend = function(uid,callback){
  *  @param Integer type 투어팁스 사용여부 (1:사용함 0:사용안함)
  * 	@param Fcuntion callback 친구목록을 불러온뒤 실행 할 함수
  * */
-facebook.getTourtipsFriend = function(uid,type,callback){
+__facebook.getTourtipsFriend = function(uid,type,callback){
 	query = 'SELECT uid, name, pic FROM user WHERE is_app_user = '+type+' AND uid IN (SELECT uid2 FROM friend WHERE uid1='+uid+')';
 	fql = {method:'fql.query',query:query};
 	FB.api(fql,function(res){

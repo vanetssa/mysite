@@ -10,10 +10,11 @@ class Info extends MY_Controller {
 	}
 
 	public function view(){
-		$this->_styleSheet[] = 'sns/google.css';
-		$this->_headScript[] = 'common/gg_connect.js';
-		$this->_headScript[] = 'common/fb_connect.js';
+		$this->_headScript[] = FACEBOOK_API;
+		$this->_headScript[] = GOOGLE_PLUS_API;
+		$this->_headScript[] = GOOGLE_PLUS_CLIENT_API;
 		$this->_headScript[] = 'common/fb_function.js';
+		$this->_headScript[] = 'common/gg_function.js';
 		$this->_footScript[] = 'user/view.js';
 
 		$userID = $this->_user->userID;
@@ -21,7 +22,7 @@ class Info extends MY_Controller {
 		$userInfo = $this->user->getUserDetail($userID);
 
 		$data = array();
-		$data['userInfo'] = $userInfo;		
+		$data['userInfo'] = $userInfo;
 
 		$this->load_view('user/info/view',$data);
 	}

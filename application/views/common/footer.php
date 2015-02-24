@@ -4,7 +4,11 @@
     <?php
         if(!empty($this->_footScript)){            
             foreach($this->_footScript as $_js){
-                if(substr($_js,0,1) == '/'){
+                if(
+                    strpos($_js,'https://') === 0
+                    || strpos($_js,'http://') === 0
+                    || strpos($_js,'/') === 0
+                    ){
                     echo '<script src="'.$_js.'"></script>';
                 }else{
                     echo '<script src="/js/'.$_js.'"></script>';

@@ -36,6 +36,11 @@ define('FOPEN_READ_WRITE_CREATE',				'a+b');
 define('FOPEN_WRITE_CREATE_STRICT',				'xb');
 define('FOPEN_READ_WRITE_CREATE_STRICT',		'x+b');
 
+//SNS관련 script파일 url
+define('FACEBOOK_API','http://connect.facebook.net/ko_KR/sdk.js');
+define('GOOGLE_PLUS_API','https://apis.google.com/js/plus.js');
+define('GOOGLE_PLUS_CLIENT_API','https://apis.google.com/js/client:plus.js');
+
 //로그인 관련 쿠키
 define('LOGIN_COOKIE_KEY',    '5762344a7fa7fd5fd20fda5329d9401141682370');//sha1('vanetssasite!@');
 define('LOGIN_COOKIE_NAME',   'van');
@@ -54,8 +59,8 @@ define('USER_STATUS_BLOCK','BA');
 define('USER_STATUS_DELETE','CA');
 
 define('SNS_TYPE_FACEBOOK','FB');
-define('SNS_TYPE_NAVER','NV');
 define('SNS_TYPE_GOOGLE','GG');
+define('SNS_TYPE_NAVER','NV');
 
 /* End of file constants.php */
 /* Location: ./application/config/constants.php */

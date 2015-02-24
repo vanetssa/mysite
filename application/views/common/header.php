@@ -22,13 +22,17 @@
 
         <!-- CSS -->
         <?php
-            if(!empty($this->_styleSheet)){            
+            if(!empty($this->_styleSheet)){
                 foreach($this->_styleSheet as $_css){
-                    if(substr($_css,0,1) == '/'){
+                    if(
+                        strpos($_css,'https://') === 0
+                        || strpos($_css,'http://') === 0
+                        || strpos($_css,'/') === 0
+                        ){
                         echo '<link href="'.$_css.'" rel="stylesheet">';
                     }else{
                         echo '<link href="/css/'.$_css.'" rel="stylesheet">';
-                    }                    
+                    }
                 }
             }
         ?>        
@@ -37,7 +41,11 @@
         <?php
             if(!empty($this->_headScript)){
                 foreach($this->_headScript as $_js){
-                    if(substr($_js,0,1) == '/'){
+                    if(
+                        strpos($_js,'https://') === 0
+                        || strpos($_js,'http://') === 0
+                        || strpos($_js,'/') === 0
+                        ){
                         echo '<script src="'.$_js.'"></script>';
                     }else{
                         echo '<script src="/js/'.$_js.'"></script>';

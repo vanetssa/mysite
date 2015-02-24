@@ -1,34 +1,6 @@
 var userLogin = {};
-var googleSignupOpt = _googleApiConfig;
-googleSignupOpt.callback = 'signinCallback';
 
-function signinCallback(authResult){	
-	if(authResult['access_token']){
-		doGoogleLogin(authResult);
-	}else if(authResult['error'] == "immediate_failed"){
-		/*
-        gapi.auth.authorize({
-            client_id: _googleApiConfig.clientid,
-            scope: _googleApiConfig.scope,
-            immediate: true
-        }, function (authRes) {
-            if (authRes['status']['signed_in']) {
-                doGoogleLogin(authResult);
-            }
-        });
-		*/
-    }
-}
-
-function doGoogleLogin(authResult){
-	gapi.auth.setToken(authResult);
-	gapi.client.load('oauth2', 'v2', function(){
-    	var request = gapi.client.oauth2.userinfo.get();
-    	request.execute(getEmailCallback);
-  	});
-}
-
-function getEmailCallback(obj){
+function doGoogleProcess(obj){
 	if(obj['id']){
 		doSnsLogin(obj['id'],'GG');
 	}else{
@@ -49,7 +21,7 @@ userLogin = {
 			userLogin.action($(this));
 		});
 
-		facebook.init(_facebookApiConfig.appid,{});
+		__facebook.init(_facebookApiConfig.appid,{});
 
 		$('#siteBody').on('keydown','#password',function(e){
 			if(e.keyCode == 13){
@@ -66,10 +38,10 @@ userLogin = {
 		});
 	}
 	,loginGoogle:function(){
-		gapi.signin.render('googleSignupBtn',googleSignupOpt);
+		__google.getOauth();
 	}
 	,loginFacebook:function(){
-		facebook.loginProcess(_facebookApiConfig.scope,function(res){			
+		__facebook.loginProcess(_facebookApiConfig.scope,function(res){			
 			var facebookUserID = '';
 			try{
 				facebookUserID = res.authResponse.userID;
