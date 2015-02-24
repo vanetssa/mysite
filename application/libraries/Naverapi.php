@@ -93,8 +93,7 @@ class Naverapi{
 	 * @return String
 	 * */
 	public function encryptToken($str){
-		$data = base64_encode($this->encrypt->encode($str, $this::TOKEN_KEY));
-		$data = preg_replace('/\+/','-',$data);
+		$data = $this->encrypt->encode($str, $this::TOKEN_KEY);		
 		return $data;
 	}
 	
@@ -105,9 +104,8 @@ class Naverapi{
 	 * @param String $str 암호 해제할 데이터
 	 * @return String
 	 * */
-	public function decryptToken($str){
-		$data = preg_replace('/\-/','+',$str);
-		$data = $this->encrypt->decode(base64_decode($data), $this::TOKEN_KEY);
+	public function decryptToken($str){		
+		$data = $this->encrypt->decode($str, $this::TOKEN_KEY);
 		return $data;
 	}
 	

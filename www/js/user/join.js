@@ -47,7 +47,7 @@ function setSnsAccount(snsID,snsEmail,snsName,snsType){
 }
 
 userJoin = {
-	init:function(){
+	init:function(){		
 		$('#siteBody').on('click','button[data-name=actionBtn],a[data-name=actionBtn]',function(){
 			userJoin.action($(this));
 		});
@@ -65,8 +65,7 @@ userJoin = {
 		});
 	}
 	,getNaver:function(src){
-		location.href = src;
-		//alert('준비중!!');
+		location.href = src;		
 	}
 	,signup:function(){
 		var email  = $('#email').val().trim();
@@ -113,7 +112,7 @@ userJoin = {
 		ajaxManager.callAjaxSubmit('saveForm');
 	}
 	,action:function(actBtn){
-		var act = actBtn.data('act');
+		var act = actBtn.data('act');	
 		switch(act){
 			case 'signup':
 				userJoin.signup();

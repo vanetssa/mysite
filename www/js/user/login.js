@@ -2,20 +2,34 @@ var userLogin = {};
 var googleSignupOpt = _googleApiConfig;
 googleSignupOpt.callback = 'signinCallback';
 
-function signinCallback(authResult){
-	gapi.auth.setToken(authResult);
+function signinCallback(authResult){	
 	if(authResult['access_token']){
-		gapi.client.load('oauth2', 'v2', function() {
-        	var request = gapi.client.oauth2.userinfo.get();
-        	request.execute(getEmailCallback);
-      	});
-	}else{
-
-	}
+		doGoogleLogin(authResult);
+	}else if(authResult['error'] == "immediate_failed"){
+		/*
+        gapi.auth.authorize({
+            client_id: _googleApiConfig.clientid,
+            scope: _googleApiConfig.scope,
+            immediate: true
+        }, function (authRes) {
+            if (authRes['status']['signed_in']) {
+                doGoogleLogin(authResult);
+            }
+        });
+		*/
+    }
 }
 
-function getEmailCallback(obj){	
-	if(obj['id']){		
+function doGoogleLogin(authResult){
+	gapi.auth.setToken(authResult);
+	gapi.client.load('oauth2', 'v2', function(){
+    	var request = gapi.client.oauth2.userinfo.get();
+    	request.execute(getEmailCallback);
+  	});
+}
+
+function getEmailCallback(obj){
+	if(obj['id']){
 		doSnsLogin(obj['id'],'GG');
 	}else{
 		messageFunction.showDanger('가입된 SNS 계정이 아닙니다.');
@@ -90,7 +104,7 @@ userLogin = {
 		ajaxManager.callAjaxSubmit('loginForm');
 	}
 	,action:function(actBtn){
-		var act = actBtn.data('act');
+		var act = actBtn.data('act');		
 		switch(act){
 			case 'signin':
 				userLogin.signin();

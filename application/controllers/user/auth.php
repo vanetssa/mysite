@@ -28,7 +28,7 @@ class Auth extends MY_Controller {
 			$decryptToken = $this->naverapi->decryptToken($accessToken);
 			$userInfo = $this->naverapi->getUserInfo($decryptToken,$tokenType);
 			if($userInfo['rst']){
-				$data['snsType'] = $this->user->SNS_TYPE_NAVER;
+				$data['snsType'] = SNS_TYPE_NAVER;
 				$data['snsID']   = $userInfo['enc_id'];
 				$data['email']   = $userInfo['email'];
 				$data['name']    = $userInfo['nickname'];

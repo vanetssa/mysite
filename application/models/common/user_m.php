@@ -2,23 +2,15 @@
 
 class User_m extends MY_Model {
 
-	const USER_STATUS_NORMAL = 'AA';
-	const USER_STATUS_BLOCK  = 'BA';
-	const USER_STATUS_DELETE = 'CA';
-
-	const SNS_TYPE_FACEBOOK = 'FB';
-	const SNS_TYPE_NAVER    = 'NV';
-	const SNS_TYPE_GOOGLE   = 'GG';
-
 	var $USER_STATUS = array();
 	var $CODE_DATA   = array();
 
 	function __construct() {
 		parent::__construct();
 
-		$this->USER_STATUS[] = array($this::USER_STATUS_NORMAL,'정상');
-		$this->USER_STATUS[] = array($this::USER_STATUS_BLOCK,'차단');
-		$this->USER_STATUS[] = array($this::USER_STATUS_DELETE,'탈퇴');
+		$this->USER_STATUS[] = array(USER_STATUS_NORMAL,'정상');
+		$this->USER_STATUS[] = array(USER_STATUS_BLOCK,'차단');
+		$this->USER_STATUS[] = array(USER_STATUS_DELETE,'탈퇴');
 
 		$this->CODE_DATA['USER_STATUS'] = $this->USER_STATUS;		
 
@@ -450,7 +442,7 @@ class User_m extends MY_Model {
 	 * @return array
 	 */
 	public function setFacebookAccount($userID,$facebookID,$email){
-		return $this->setSNSAccount($userID,$facebookID,$email,$this::SNS_TYPE_FACEBOOK);
+		return $this->setSNSAccount($userID,$facebookID,$email,SNS_TYPE_FACEBOOK);
 	}
 
 	/**
@@ -464,7 +456,7 @@ class User_m extends MY_Model {
 	 * @return array
 	 */
 	public function setNaverAccount($userID,$naverID,$email){
-		return $this->setSNSAccount($userID,$naverID,$email,$this::SNS_TYPE_NAVER);
+		return $this->setSNSAccount($userID,$naverID,$email,SNS_TYPE_NAVER);
 	}
 
 	/**
@@ -478,6 +470,6 @@ class User_m extends MY_Model {
 	 * @return array
 	 */
 	public function setGoogleAccount($userID,$googleID,$email){
-		return $this->setSNSAccount($userID,$googleID,$email,$this::SNS_TYPE_GOOGLE);
+		return $this->setSNSAccount($userID,$googleID,$email,SNS_TYPE_GOOGLE);
 	}
 }

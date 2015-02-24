@@ -1,3 +1,17 @@
+function objectCopy(obj,add){
+	var newObj = {};
+	for(key in obj){
+		newObj[key] = obj[key];
+	}
+
+	if(typeof add == 'object'){
+		for(key in add){
+			newObj[key] = add[key];
+		}
+	}
+	return newObj;
+}
+
 var ajaxManager = {};
 ajaxManager = {
 	opt:{}
@@ -83,20 +97,6 @@ function getCookie( cookieName ){
 		// 쿠키 자체가 없을 경우
 		return false;
 	}
-}
-
-function objectCopy(obj,add){
-	var newObj = {};
-	for(key in obj){
-		newObj[key] = obj[key];
-	}
-
-	if(typeof add == 'object'){
-		for(key in add){
-			newObj[key] = add[key];		
-		}
-	}
-	return newObj;
 }
 
 var commonFunction = {};

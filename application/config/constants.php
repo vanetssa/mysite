@@ -48,5 +48,14 @@ if(ENVIRONMENT == 'production'){
 	define('DOMAIN_URL', 'devphp.vanetssa.com');
 }
 
+//회원관련 코드값
+define('USER_STATUS_NORMAL','AA');
+define('USER_STATUS_BLOCK','BA');
+define('USER_STATUS_DELETE','CA');
+
+define('SNS_TYPE_FACEBOOK','FB');
+define('SNS_TYPE_NAVER','NV');
+define('SNS_TYPE_GOOGLE','GG');
+
 /* End of file constants.php */
 /* Location: ./application/config/constants.php */
