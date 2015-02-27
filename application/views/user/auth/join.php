@@ -2,6 +2,7 @@
 <form class="form-horizontal" role="form" action="/user/auth/save" method="post" id="saveForm" name="saveForm">
   <input type="hidden" name="snsType"  id="snsType"  value="<?php echo $snsType; ?>">
   <input type="hidden" name="snsID"    id="snsID"    value="<?php echo $snsID; ?>">
+  <input type="hidden" name="nvurl"    id="nvurl"    value="<?php echo $nvurl; ?>">  
   <div class="form-group">
     <label for="email" class="col-sm-2 control-label">Email</label>
     <div class="col-sm-4">
@@ -28,10 +29,10 @@
   </div>
   <div class="form-group">
     <div class="col-sm-offset-2 col-sm-8">
-      <button type="button"                        class="btn"             data-name="actionBtn" data-act="signup">Sign up</button>
+      <button type="button"                       class="btn"             data-name="actionBtn" data-act="signup">Sign up</button>
       <button type="button" id="googleOauthBtn"   class="btn btn-danger"  data-name="actionBtn" data-act="getGoogle">google로 가입</button>
       <button type="button" id="facebookOauthBtn" class="btn btn-primary" data-name="actionBtn" data-act="getFacebook">facebook으로 가입</button>
-      <button type="button" id="naverOauthBtn"    class="btn btn-success" data-name="actionBtn" data-act="getNaver" data-val="<?php echo $nvurl; ?>">네이버로 가입</button>
+      <button type="button" id="naverOauthBtn"    class="btn btn-success" data-name="actionBtn" data-act="getNaver">네이버로 가입</button>
     </div>
   </div>
 </form>

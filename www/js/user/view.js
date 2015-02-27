@@ -1,30 +1,22 @@
 var userView = {};
-var googleSignupOpt = _googleApiConfig;
-googleSignupOpt.callback = 'signinCallback';
 
-function signinCallback(authResult){
-	gapi.auth.setToken(authResult);
-	if(authResult['access_token']){
-		gapi.client.load('oauth2', 'v2', function() {
-        	var request = gapi.client.oauth2.userinfo.get();
-        	request.execute(getEmailCallback);
-      	});
-	}else{
-
+function doGoogleProcess(obj){	
+	if(obj['email']){
+		$('#snsType').val(_SNS_TYPE_GOOGLE);
+		$('#snsID').val(obj['id']);
+		$('#email').val(obj['email']);
+		$('#saveForm').attr('action','/user/sns/connect');
+		userView.dataSubmit('구글 계정과 연결 되었습니다.');
 	}
 }
 
-function getEmailCallback(obj){	
-	if(obj['email']){
-		$('#snsType').val('GG').attr('readonly',true);
-		$('#snsID').val(obj['id']).attr('readonly',true);
-		$('#email').val(obj['email']).attr('readonly',true);
-		$('#name').val(obj['name']);
-		
-		$('#password').attr('readonly',true).closest('div.form-group').hide();
-		$('#passwordConfirm').attr('readonly',true).closest('div.form-group').hide();
-
-		$('#saveForm').attr('action','/user/auth/setsns');
+function doFacebookProcess(obj){
+	if(obj.id && obj.email){
+		$('#snsType').val(_SNS_TYPE_FACEBOOK);
+		$('#snsID').val(obj.id);
+		$('#email').val(obj.email);
+		$('#saveForm').attr('action','/user/sns/connect');
+		userView.dataSubmit('페이스북 계정과 연결 되었습니다.');
 	}
 }
 
@@ -34,8 +26,20 @@ userView = {
 			userView.action($(this));
 		});
 	}
-	,getGoogle:function(){
-		gapi.signin.render('googleSignupBtn',googleSignupOpt);
+	,connectFacebook:function(){
+		__facebook.getOauth();
+	}
+	,connectGoogle:function(){
+		__google.getOauth();
+	}
+	,connectNaver:function(){
+		commonFunction.movePage($('#nvurl').val());
+	}
+	,disconnectSNS:function(snsType){
+		$('#snsType').val(snsType);
+		$('#saveForm').attr('action','/user/sns/disconnect');
+
+		userView.dataSubmit('연결 해제 되었습니다.');
 	}
 	,modify:function(){
 		var passwd = $('#password').val().trim();
@@ -55,7 +59,7 @@ userView = {
 			return false;
 		}
 
-		if(passwordNew != passwordConfirmNew){			
+		if(passwordNew != passwordConfirmNew){
 			messageFunction.showWarning('비번 동일하게 입력 하자구요~');
 			$('#passwordConfirmNew').focus();
 			return false;
@@ -66,11 +70,17 @@ userView = {
 			$('#name').focus();
 			return false;
 		}
+		
+		$('#saveForm').attr('action','/user/info/modify');
 
+		userView.dataSubmit();
+	}
+	,dataSubmit:function(msg,url){
+		var _msg = (msg)?msg:'수정완료';
+		var _url = (url)?url:'/user/info/view';
 		ajaxManager.setCallback(function(res){
 			if(res.status == 200){
-				alert('저장완료');
-				location.href='/';
+				commonFunction.movePage(_url,_msg);
 			}else{
 				messageFunction.showDanger(res.msg);
 			}
@@ -80,11 +90,18 @@ userView = {
 	,action:function(actBtn){
 		var act = actBtn.data('act');
 		switch(act){
+			case 'connectSNS':
+				var snsType = actBtn.data('type');
+				if(snsType == _SNS_TYPE_FACEBOOK){ userView.connectFacebook(); }
+				else if(snsType == _SNS_TYPE_GOOGLE){ userView.connectGoogle(); }
+				else if(snsType == _SNS_TYPE_NAVER){ userView.connectNaver(); }
+				break;
+			case 'disconnectSNS':
+				var snsType = actBtn.data('type');
+				userView.disconnectSNS(snsType);
+				break;
 			case 'modify':
 				userView.modify();
-				break;
-			case 'getGoogle':
-				userView.getGoogle();
 				break;
 		}
 	}

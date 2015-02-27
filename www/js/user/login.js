@@ -2,9 +2,17 @@ var userLogin = {};
 
 function doGoogleProcess(obj){
 	if(obj['id']){
-		doSnsLogin(obj['id'],'GG');
+		doSnsLogin(obj['id'],_SNS_TYPE_GOOGLE);
 	}else{
-		messageFunction.showDanger('가입된 SNS 계정이 아닙니다.');
+		messageFunction.showDanger('구글 로그인을 확인하세요.');
+	}
+}
+
+function doFacebookProcess(obj){
+	if(obj.id){
+		doSnsLogin(obj.id,_SNS_TYPE_FACEBOOK);
+	}else{
+		messageFunction.showDanger('페이스북 로그인을 확인하세요.');
 	}
 }
 
@@ -31,35 +39,27 @@ userLogin = {
 
 		ajaxManager.setCallback(function(res){
 			if(res.status == 200){
-				location.href='/';
+				commonFunction.movePage('/');
 			}else{
 				messageFunction.showDanger(res.msg);
 			}
 		});
+	}	
+	,loginFacebook:function(){		
+		__facebook.getOauth();
 	}
 	,loginGoogle:function(){
 		__google.getOauth();
 	}
-	,loginFacebook:function(){
-		__facebook.loginProcess(_facebookApiConfig.scope,function(res){			
-			var facebookUserID = '';
-			try{
-				facebookUserID = res.authResponse.userID;
-			}catch(err){}
-			
-			if(facebookUserID){
-				doSnsLogin(facebookUserID,'FB');
-			}else{
-				messageFunction.showDanger('가입된 SNS 계정이 아닙니다.');
-			}
-		});
-	}
-	,loginNaver:function(){
-		alert('준비중!');
+	,loginNaver:function(){		
+		commonFunction.movePage($('#nvurl').val());
 	}
 	,signin:function(){
 		var email  = $('#email').val().trim();
-		var password = $('#password').val().trim();	
+		var password = $('#password').val().trim();
+
+		$('#snsType').val('');
+		$('#snsID').val('');
 
 		if(!email){
 			alert('이메일 제대로 입력 합시다~');

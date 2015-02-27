@@ -108,8 +108,14 @@ commonFunction = {
 		if (cookie=="") return false;
 		return true;
 	}
-	,moveToLogin:function(){
-		location.href = '/user/auth/login';
+	,moveToLogin:function(){		
+		commonFunction.movePage('/user/auth/login');
+	}
+	,movePage:function(url,msg){
+		if(msg){
+			alert(msg);
+		}
+		document.location.href = url;
 	}
 };
 

@@ -1,6 +1,10 @@
 <div id="fb-root"></div>
 <form class="form-horizontal" role="form" action="/user/info/modify" method="post" id="saveForm" name="saveForm">  
-  <input type="hidden" name="userID" id="userID" value="<?php echo $userInfo['userID']; ?>">
+  <input type="hidden" name="userID"  id="userID"  value="<?php echo $userInfo['userID']; ?>">
+  <input type="hidden" name="snsType" id="snsType" value="">
+  <input type="hidden" name="snsID"   id="snsID"   value="">
+  <input type="hidden" name="email"   id="email"   value="">
+  <input type="hidden" name="nvurl"   id="nvurl"   value="<?php echo $nvurl; ?>">
   <div class="form-group">
     <label for="email" class="col-sm-2 control-label">Email</label>
     <div class="col-sm-4">
@@ -30,7 +34,7 @@
     <div class="col-sm-4">
       <input type="text" class="form-control" id="name" name="name" value="<?php echo $userInfo['name']; ?>" placeholder="이름">
     </div>
-  </div>  
+  </div>
   <?php
     foreach($userInfo['snsInfo'] as $code=>$data){
   ?>
@@ -40,13 +44,13 @@
       <?php if(!empty($data['info'])){ ?>
       <p class="form-control-static">
         <?php echo $data['info']['email']; ?>
-        <button type="button" class="btn btn-danger" data-name="actionBtn" data-act="disconnectSNS">연결끊기</button>
+        <button type="button" class="btn btn-danger" data-name="actionBtn" data-type="<?php echo $data['code']; ?>" data-act="disconnectSNS">연결끊기</button>
       </p>
       <?php }else{ ?>
       <p class="form-control-static">        
-        <button type="button" class="btn btn-success" data-name="actionBtn" data-act="connectSNS">연결하기</button>
+        <button type="button" class="btn btn-success" data-name="actionBtn" data-type="<?php echo $data['code']; ?>" data-act="connectSNS">연결하기</button>
       </p>
-      <?php } ?>      
+      <?php } ?>
     </div>
   </div>
   <?php

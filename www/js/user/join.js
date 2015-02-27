@@ -2,7 +2,18 @@ var userJoin = {};
 
 function doGoogleProcess(obj){
 	if(obj['email']){
-		setSnsAccount(obj['id'],obj['email'],obj['name'],'GG');
+		setSnsAccount(obj['id'],obj['email'],obj['name'],_SNS_TYPE_GOOGLE);
+	}
+}
+
+function doFacebookProcess(obj){
+	if(obj.id && obj.email){
+		$('#snsType').val(_SNS_TYPE_FACEBOOK);
+		$('#snsID').val(obj.id);
+		$('#email').val(obj.email);
+		$('#saveForm').attr('action','/user/sns/connect');
+		userView.dataSubmit('페이스북 계정과 연결 되었습니다.');
+		setSnsAccount(obj.id,obj.email,obj.name,'FB');
 	}
 }
 
@@ -23,7 +34,7 @@ function setSnsAccount(snsID,snsEmail,snsName,snsType){
 			$('#saveForm').attr('action','/user/auth/setsns');
 		}else{
 			if(res.status == 201){
-				location.href='/';
+				commonFunction.movePage('/','가입완료');
 			}else{
 				messageFunction.showDanger(res.msg);
 			}
@@ -40,18 +51,14 @@ userJoin = {
 
 		__facebook.init(_facebookApiConfig.appid,{});
 	}
+	,getFacebook:function(){
+		__facebook.getOauth();
+	}
 	,getGoogle:function(){
 		__google.getOauth();
-	}
-	,getFacebook:function(){
-		__facebook.oauthProcess(_facebookApiConfig.scope,function(){
-			__facebook.getLoginUserInfo(function(response){
-				setSnsAccount(response.id,response.email,response.name,'FB');
-			});
-		});
-	}
-	,getNaver:function(src){
-		location.href = src;		
+	}	
+	,getNaver:function(){
+		commonFunction.movePage($('#nvurl').val());
 	}
 	,signup:function(){
 		var email  = $('#email').val().trim();
@@ -87,9 +94,8 @@ userJoin = {
 		}
 
 		ajaxManager.setCallback(function(res){
-			if(res.status == 200){
-				alert('저장완료');
-				location.href='/';
+			if(res.status == 200){				
+				commonFunction.movePage('/','가입완료');
 			}else{
 				messageFunction.showDanger(res.msg);
 			}
@@ -110,7 +116,7 @@ userJoin = {
 				userJoin.getFacebook();
 				break;
 			case 'getNaver':
-				userJoin.getNaver(actBtn.data('val'));
+				userJoin.getNaver();
 				break;
 		}
 	}

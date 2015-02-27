@@ -37,7 +37,7 @@ define('FOPEN_WRITE_CREATE_STRICT',				'xb');
 define('FOPEN_READ_WRITE_CREATE_STRICT',		'x+b');
 
 //SNS관련 script파일 url
-define('FACEBOOK_API','http://connect.facebook.net/ko_KR/sdk.js');
+define('FACEBOOK_API','https://connect.facebook.net/ko_KR/sdk.js');
 define('GOOGLE_PLUS_API','https://apis.google.com/js/plus.js');
 define('GOOGLE_PLUS_CLIENT_API','https://apis.google.com/js/client:plus.js');
 

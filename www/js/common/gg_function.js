@@ -1,9 +1,6 @@
 var __google = __google || {};
 
-var googleOauthOpt = _googleApiConfig;
-googleOauthOpt.callback = '__google.oauthCallback';
-
-__google.oauthCallback = function(authResult){
+googleOauthCallback = function(authResult){
 	if(authResult['access_token']){
 		__google.getUserInfo(authResult);
 	}else if(authResult['error'] == "immediate_failed"){
@@ -27,6 +24,6 @@ __google.getUserInfo = function(authResult){
   	});
 }
 
-__google.getOauth = function(){
-    gapi.signin.render('googleOauthBtn',googleOauthOpt);
+__google.getOauth = function(){    
+    gapi.signin.render('googleOauthBtn',_googleApiConfig);    
 }

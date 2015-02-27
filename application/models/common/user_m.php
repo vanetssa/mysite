@@ -246,7 +246,7 @@ class User_m extends MY_Model {
 	 * @param array $userInfo 사용자정보
 	 * @return boolean
 	 */
-	public function login($userInfo){		
+	public function login($userInfo){
 		if(empty($userInfo)){
 			return false;
 		}else{
@@ -390,9 +390,11 @@ class User_m extends MY_Model {
 	 * @return array
 	 */
 	public function setSNSAccount($userID,$snsID,$email,$type){
-		$snsAcc = $this->getSNSAccount($userID,$type);
+		$snsAcc = $this->getSNSAccount('',$type,$snsID);
 		if(!empty($snsAcc)){
-			if($snsAcc['status'] == 'AA'){
+			if($snsAcc['userID'] != $userID){
+				return array('rst'=>'other','data'=>array());
+			}else if($snsAcc['status'] == 'AA'){
 				return array('rst'=>'exist','data'=>$snsAcc);
 			}else{
 				$this->recoverySNSAccount($userID,$type);

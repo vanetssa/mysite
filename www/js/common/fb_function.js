@@ -300,10 +300,10 @@ __facebook.getFriend = function(uid,callback){
 }
 
 /**
- * 	투어팁스 사용여부에 따른 친구 목록
+ * 	앱 사용여부에 따른 친구 목록
  * 	
  * 	@param Integer uid 페이스북에서 사용되는 사용자의 고유 ID
- *  @param Integer type 투어팁스 사용여부 (1:사용함 0:사용안함)
+ *  @param Integer type 앱 사용여부 (1:사용함 0:사용안함)
  * 	@param Fcuntion callback 친구목록을 불러온뒤 실행 할 함수
  * */
 __facebook.getTourtipsFriend = function(uid,type,callback){
@@ -311,5 +311,17 @@ __facebook.getTourtipsFriend = function(uid,type,callback){
 	fql = {method:'fql.query',query:query};
 	FB.api(fql,function(res){
 		callback(res);
+	});
+}
+
+/**
+ * 로그인 하기 및 사용자 정보 얻어오기 
+ * doFacebookProcess : 사용자 정보 얻은 후 진행할 로직을 해당 페이지에서 구현
+ */
+__facebook.getOauth = function(){
+	__facebook.oauthProcess(_facebookApiConfig.scope,function(){
+		__facebook.getLoginUserInfo(function(response){
+			doFacebookProcess(response);
+		});
 	});
 }

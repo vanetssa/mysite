@@ -6,14 +6,12 @@ class Auth extends MY_Controller {
 
 		$this->load->model('common/user_m','user');
 		$this->load->library('naverapi');
+
+		$this->useFacebookAPI = true;
+		$this->useGoogleAPI   = true;
 	}
 
-	public function join(){
-		$this->_headScript[] = FACEBOOK_API;
-		$this->_headScript[] = GOOGLE_PLUS_API;
-		$this->_headScript[] = GOOGLE_PLUS_CLIENT_API;
-		$this->_headScript[] = 'common/fb_function.js';
-		$this->_headScript[] = 'common/gg_function.js';
+	public function join(){		
 		$this->_footScript[] = 'user/join.js';
 
 		$data = array();
@@ -40,18 +38,17 @@ class Auth extends MY_Controller {
 		$this->load_view('user/auth/join',$data);
 	}
 
-	public function login(){
-		$this->_headScript[] = FACEBOOK_API;
-		$this->_headScript[] = GOOGLE_PLUS_API;
-		$this->_headScript[] = GOOGLE_PLUS_CLIENT_API;
-		$this->_headScript[] = 'common/fb_function.js';
-		$this->_headScript[] = 'common/gg_function.js';
+	public function login(){		
 		$this->_footScript[] = 'user/login.js';
 
 		if($this->_user){
 			$this->movePage('/');
 		}
-		$this->load_view('user/auth/login');
+
+		$data = array();		
+		$data['nvurl'] = $this->naverapi->getLoginUrl('m=login');
+
+		$this->load_view('user/auth/login',$data);
 	}
 
 	public function save($userID=''){
@@ -89,7 +86,6 @@ class Auth extends MY_Controller {
 
 		if($snsType && $snsID && $email && $name){
 			$userInfo = $this->user->getUserDetail('',$email);
-			error_log(print_r($userInfo,true));
 			if($userInfo){
 				$userID = $userInfo['userID'];
 			}else{

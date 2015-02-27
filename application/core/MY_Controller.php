@@ -20,6 +20,9 @@
 		var $_agent    = '';
 		var $_user     = array();
 
+		var $useFacebookAPI = false;
+		var $useGoogleAPI   = false;
+
 		function __construct() {
 			parent::__construct();
 
@@ -28,12 +31,12 @@
 			$this->_styleSheet[] = '/bootstrap/css/docs.min.css';
 			$this->_styleSheet[] = '/bootstrap/css/theme.css';
 
-			$this->_footScript[] = 'common/jquery.js';
-			$this->_footScript[] = 'common/jquery.form.min.js';
-			$this->_footScript[] = '/bootstrap/js/bootstrap.min.js';
-			$this->_footScript[] = 'common/ie10-viewport-bug-workaround.js';
-			$this->_footScript[] = 'const.js';
-			$this->_footScript[] = 'common.js';
+			$this->_headScript[] = 'common/jquery.js';
+			$this->_headScript[] = 'common/jquery.form.min.js';
+			$this->_headScript[] = '/bootstrap/js/bootstrap.min.js';
+			$this->_headScript[] = 'common/ie10-viewport-bug-workaround.js';
+			$this->_headScript[] = 'const.js';
+			$this->_headScript[] = 'common.js';
 
 			$this->_title = 'van site';
 

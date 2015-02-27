@@ -7,14 +7,13 @@ class Info extends MY_Controller {
 		$this->checkLogin();
 
 		$this->load->model('common/user_m','user');
+		$this->load->library('naverapi');
+
+		$this->useFacebookAPI = true;
+		$this->useGoogleAPI   = true;
 	}
 
 	public function view(){
-		$this->_headScript[] = FACEBOOK_API;
-		$this->_headScript[] = GOOGLE_PLUS_API;
-		$this->_headScript[] = GOOGLE_PLUS_CLIENT_API;
-		$this->_headScript[] = 'common/fb_function.js';
-		$this->_headScript[] = 'common/gg_function.js';
 		$this->_footScript[] = 'user/view.js';
 
 		$userID = $this->_user->userID;
@@ -23,6 +22,7 @@ class Info extends MY_Controller {
 
 		$data = array();
 		$data['userInfo'] = $userInfo;
+		$data['nvurl'] = $this->naverapi->getLoginUrl('m=connect');
 
 		$this->load_view('user/info/view',$data);
 	}
