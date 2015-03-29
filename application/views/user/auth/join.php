@@ -33,6 +33,7 @@
       <button type="button" id="googleOauthBtn"   class="btn btn-danger"  data-name="actionBtn" data-act="getGoogle">google로 가입</button>
       <button type="button" id="facebookOauthBtn" class="btn btn-primary" data-name="actionBtn" data-act="getFacebook">facebook으로 가입</button>
       <button type="button" id="naverOauthBtn"    class="btn btn-success" data-name="actionBtn" data-act="getNaver">네이버로 가입</button>
+      <button type="button" id="kakaoOauthBtn"    class="btn btn-warning" data-name="actionBtn" data-act="getKakao">카카오로 가입</button>
     </div>
   </div>
 </form>

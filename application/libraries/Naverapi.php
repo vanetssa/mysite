@@ -350,7 +350,7 @@ class Naverapi{
 					
 					$location = '/ap/members/landing/?lt=NV&ni='.$userInfo['enc_id'].'&tk='.$tokenData['access_token'].'&t_type='.$tokenData['token_type'].'&redirect='.$rd;
 					header('Location : '.$location);
-					exit;			
+					exit;
 				}
 			}
 		}

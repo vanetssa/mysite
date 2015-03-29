@@ -50,6 +50,7 @@ userJoin = {
 		});
 
 		__facebook.init(_facebookApiConfig.appid,{});
+		__kakao.init(_kakaoApiConfig.appid);
 	}
 	,getFacebook:function(){
 		__facebook.getOauth();
@@ -59,6 +60,9 @@ userJoin = {
 	}	
 	,getNaver:function(){
 		commonFunction.movePage($('#nvurl').val());
+	}
+	,getKakao:function(){
+		__kakao.getOauth();
 	}
 	,signup:function(){
 		var email  = $('#email').val().trim();
@@ -117,6 +121,9 @@ userJoin = {
 				break;
 			case 'getNaver':
 				userJoin.getNaver();
+				break;
+			case 'getKakao':
+				userJoin.getKakao();
 				break;
 		}
 	}

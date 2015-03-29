@@ -9,6 +9,7 @@ class Auth extends MY_Controller {
 
 		$this->useFacebookAPI = true;
 		$this->useGoogleAPI   = true;
+		$this->useKakaoAPI    = true;
 	}
 
 	public function join(){		
@@ -33,7 +34,7 @@ class Auth extends MY_Controller {
 				$data['email']   = $userInfo['email'];
 				$data['name']    = $userInfo['nickname'];
 			}
-		}
+		}		
 
 		$this->load_view('user/auth/join',$data);
 	}

@@ -9,6 +9,9 @@ _googleApiConfig.requestvisibleactions = 'http://schemas.google.com/AddActivity'
 _googleApiConfig.scope = 'https://www.googleapis.com/auth/plus.login https://www.googleapis.com/auth/userinfo.email';
 _googleApiConfig.callback = 'googleOauthCallback';
 
+var _kakaoApiConfig = {};
+_kakaoApiConfig.appid = '75a2305678f687eb58368ea538d5e352';
+
 var _ajaxCommonOpt = {};
 _ajaxCommonOpt.dataType = 'json';
 _ajaxCommonOpt.type     = 'post';

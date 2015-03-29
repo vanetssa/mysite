@@ -54,6 +54,36 @@
             }
         ?>
 
+        <!-- SNS JS -->
+        <?php if($this->useFacebookAPI){ ?>
+        <script>
+            (function(d, s, id){
+             var js, fjs = d.getElementsByTagName(s)[0];
+             if (d.getElementById(id)) {return;}
+             js = d.createElement(s); js.id = id;
+             js.src = "//connect.facebook.net/ko_KR/sdk.js";
+             fjs.parentNode.insertBefore(js, fjs);
+            }(document, 'script', 'facebook-jssdk'));
+        </script>
+        <script src="/js/common/fb_function.js"></script>
+        <?php } ?>
+
+        <?php if($this->useGoogleAPI){ ?>
+        <script>
+            (function() {
+             var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+             po.src = 'https://apis.google.com/js/client:plusone.js';
+             var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+            })();
+        </script>
+        <script src="/js/common/gg_function.js"></script>
+        <?php } ?>
+
+        <?php if($this->useKakaoAPI){ ?>
+        <script src="https://developers.kakao.com/sdk/js/kakao.min.js"></script>
+        <script src="/js/common/ka_function.js"></script>
+        <?php } ?>
+
         <!-- Head Inline Script -->
         <?php if(!empty($this->_inlineHeadScript)){ echo '<script>'.$this->_inlineHeadScript.'</script>'; } ?>
     </head>
